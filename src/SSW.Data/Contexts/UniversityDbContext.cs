@@ -11,7 +11,7 @@ namespace SSW.Data.Contexts
 {
     public class UniversityDbContext : DbContext
     {
-        protected UniversityDbContext() : base("UniversityConnection")
+        public UniversityDbContext() : base("UniversityConnection")
         {
         }
 
