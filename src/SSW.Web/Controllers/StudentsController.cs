@@ -10,15 +10,16 @@ using System.Web.Mvc;
 using SSW.Data.Contexts;
 using SSW.Data.Entitties;
 using SSW.Data.Repositories;
+using AutoMapper;
+using SSW.Web.ViewModels.Student;
 
 namespace SSW.Web.Controllers
 {
     public class StudentsController : Controller
     {
-        private UniversityDbContext db = new UniversityDbContext();
         private StudentRepository _repository = new StudentRepository(new UniversityDbContext());
 
-        // TODO: Dependency injection (Autofac), create DTOs and use automapper
+        // TODO: Dependency injection (Autofac), create DTOs and DO NOT USE use automapper
         //private readonly IStudentRepository _repository;
 
         //public StudentsController(IStudentRepository repository)
@@ -30,7 +31,27 @@ namespace SSW.Web.Controllers
         public async Task<ActionResult> Index()
         {
             var students = await _repository.GetAllAsync();
-            return View(students);
+
+            var results = new List<StudentIndexVM>();
+
+            foreach (var student in students)
+            {
+                var avg = student.Enrollments.Average(x => (int?)x.Grade);
+
+                if (avg != null)
+                {
+                    avg = Math.Round((double)avg, 0, MidpointRounding.AwayFromZero);
+                }
+
+                results.Add(new StudentIndexVM
+                {
+                    Id = student.Id,
+                    FullName = $"{student.LastName} {student.FirstName}",
+                    AvgGrade = (Grade?)avg
+                });
+            }
+
+            return View(results);
         }
 
         // GET: Students/Details/5
@@ -134,15 +155,6 @@ namespace SSW.Web.Controllers
             await _repository.DeleteAsync(student);
             
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

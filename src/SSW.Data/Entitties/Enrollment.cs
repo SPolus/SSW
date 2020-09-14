@@ -18,6 +18,10 @@ namespace SSW.Data.Entitties
 
     public enum Grade
     {
-        A, B, C, D, F
+        A = 5,
+        B = 4,
+        C = 3,
+        D = 2,
+        F = 1
     }
 }
