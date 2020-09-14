@@ -9,17 +9,28 @@ using System.Web;
 using System.Web.Mvc;
 using SSW.Data.Contexts;
 using SSW.Data.Entitties;
+using SSW.Data.Repositories;
 
 namespace SSW.Web.Controllers
 {
     public class StudentsController : Controller
     {
         private UniversityDbContext db = new UniversityDbContext();
+        private StudentRepository _repository = new StudentRepository(new UniversityDbContext());
+
+        // TODO: Dependency injection (Autofac), create DTOs and use automapper
+        //private readonly IStudentRepository _repository;
+
+        //public StudentsController(IStudentRepository repository)
+        //{
+        //    _repository = repository;
+        //}
 
         // GET: Students
         public async Task<ActionResult> Index()
         {
-            return View(await db.Students.ToListAsync());
+            var students = await _repository.GetAllAsync();
+            return View(students);
         }
 
         // GET: Students/Details/5
@@ -29,11 +40,14 @@ namespace SSW.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = await db.Students.FindAsync(id);
+
+            var student = await _repository.GetByIdAsync((int)id);
+
             if (student == null)
             {
                 return HttpNotFound();
             }
+
             return View(student);
         }
 
@@ -52,8 +66,7 @@ namespace SSW.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Students.Add(student);
-                await db.SaveChangesAsync();
+                await _repository.AddAsync(student);
                 return RedirectToAction("Index");
             }
 
@@ -67,11 +80,14 @@ namespace SSW.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = await db.Students.FindAsync(id);
+
+            var student = await _repository.GetByIdAsync((int)id);
+
             if (student == null)
             {
                 return HttpNotFound();
             }
+
             return View(student);
         }
 
@@ -84,10 +100,10 @@ namespace SSW.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(student).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                await _repository.UpdateAsync(student);
                 return RedirectToAction("Index");
             }
+
             return View(student);
         }
 
@@ -98,11 +114,14 @@ namespace SSW.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Student student = await db.Students.FindAsync(id);
+
+            var student = await _repository.GetByIdAsync((int)id);
+
             if (student == null)
             {
                 return HttpNotFound();
             }
+
             return View(student);
         }
 
@@ -111,9 +130,9 @@ namespace SSW.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Student student = await db.Students.FindAsync(id);
-            db.Students.Remove(student);
-            await db.SaveChangesAsync();
+            var student = await _repository.GetByIdAsync((int)id);
+            await _repository.DeleteAsync(student);
+            
             return RedirectToAction("Index");
         }
 
