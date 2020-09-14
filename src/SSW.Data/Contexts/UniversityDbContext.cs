@@ -11,9 +11,8 @@ namespace SSW.Data.Contexts
 {
     public class UniversityDbContext : DbContext
     {
-        protected UniversityDbContext() : base()
+        public UniversityDbContext() : base("UniversityConnection")
         {
-            //Database.SetInitializer<UniversityDbContext>(new DataInitializer());
         }
 
         public DbSet<Student> Students { get; set; }
