@@ -10,7 +10,6 @@ using System.Web.Mvc;
 using SSW.Data.Contexts;
 using SSW.Data.Entitties;
 using SSW.Data.Repositories;
-using AutoMapper;
 using SSW.Web.ViewModels.Student;
 
 namespace SSW.Web.Controllers

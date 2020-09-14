@@ -51,8 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contexts\AuthDbContext.cs" />
     <Compile Include="Contexts\UniversityDbContext.cs" />
     <Compile Include="Data\DataInitializer.cs" />
+    <Compile Include="Entitties\Auth\Role.cs" />
+    <Compile Include="Entitties\Auth\User.cs" />
+    <Compile Include="Entitties\Auth\UserRole.cs" />
     <Compile Include="Entitties\BaseEntity.cs" />
     <Compile Include="Entitties\Course.cs" />
     <Compile Include="Entitties\CourseAssignment.cs" />
@@ -61,8 +65,10 @@
     <Compile Include="Entitties\Person.cs" />
     <Compile Include="Entitties\Student.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AuthRepository.cs" />
     <Compile Include="Repositories\EfRepository.cs" />
     <Compile Include="Repositories\IAsyncRepository.cs" />
+    <Compile Include="Repositories\IAuthRepository.cs" />
     <Compile Include="Repositories\IStudentRepository.cs" />
     <Compile Include="Repositories\StudentRepository.cs" />
   </ItemGroup>

@@ -17,8 +17,5 @@ namespace SSW.Data.Entitties
         [Required]
         [MaxLength(50)]
         public string LastName { get; set; }
-
-        [NotMapped]
-        public string FullName => $"{LastName} {FirstName}";
     }
 }
