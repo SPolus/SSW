@@ -1,5 +1,8 @@
-﻿using SSW.Data.Contexts;
+﻿using Autofac;
+using Autofac.Integration.Mvc;
+using SSW.Data.Contexts;
 using SSW.Data.Data;
+using SSW.Data.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -21,6 +24,15 @@ namespace SSW.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterControllers(typeof(MvcApplication).Assembly);
+            builder.RegisterType<StudentRepository>().As<IStudentRepository>();
+            builder.RegisterType<UniversityDbContext>().InstancePerRequest();
+
+            var container = builder.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
             Database.SetInitializer(new DataInitializer());
             UniversityDbContext context = new UniversityDbContext();

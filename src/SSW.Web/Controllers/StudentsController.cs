@@ -16,15 +16,12 @@ namespace SSW.Web.Controllers
 {
     public class StudentsController : Controller
     {
-        private StudentRepository _repository = new StudentRepository(new UniversityDbContext());
+        private readonly IStudentRepository _repository;
 
-        // TODO: Dependency injection (Autofac), create DTOs and DO NOT USE use automapper
-        //private readonly IStudentRepository _repository;
-
-        //public StudentsController(IStudentRepository repository)
-        //{
-        //    _repository = repository;
-        //}
+        public StudentsController(IStudentRepository repository)
+        {
+            _repository = repository;
+        }
 
         // GET: Students
         public async Task<ActionResult> Index()

@@ -23,7 +23,6 @@ namespace SSW.Data.Repositories
             if (includeOptions)
             {
                 return await _context.Students
-                    //.Include(e => e.Enrollments.Select(g => g.Grade))
                     .Include(e => e.Enrollments)
                     .Include(e => e.Enrollments.Select(c => c.Course))
                     .ToListAsync();
@@ -37,7 +36,6 @@ namespace SSW.Data.Repositories
             if (includeOptions)
             {
                 return await _context.Students
-                    //.Include(e => e.Enrollments.Select(g => g.Grade))
                     .Include(e => e.Enrollments)
                     .Include(e => e.Enrollments.Select(c => c.Course))
                     .FirstOrDefaultAsync(s => s.Id == id);
