@@ -96,7 +96,8 @@ namespace SSW.Web.Controllers
                     FirstName = student.FirstName,
                     LastName = student.LastName,
                     Email = student.Email,
-                    Password = Crypto.HashPassword(student.Password)
+                    Password = student.Password
+                    //Password = Crypto.HashPassword(student.Password)
                 };
 
                 await _repository.AddAsync(newStudent); // map
