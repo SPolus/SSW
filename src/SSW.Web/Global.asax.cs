@@ -19,6 +19,10 @@ namespace SSW.Web
     {
         protected void Application_Start()
         {
+            
+            //GlobalFilters.Filters.Add(new { });
+            
+            
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
