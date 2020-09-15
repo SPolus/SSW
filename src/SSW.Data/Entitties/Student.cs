@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SSW.Data.Entitties
 {
-    public class Student : Person
+    public class Student : User
     {
         public ICollection<Enrollment> Enrollments { get; set; }
     }

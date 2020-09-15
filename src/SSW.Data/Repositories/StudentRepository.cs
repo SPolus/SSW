@@ -23,7 +23,6 @@ namespace SSW.Data.Repositories
             if (includeOptions)
             {
                 return await _context.Students
-                    //.Include(e => e.Enrollments.Select(g => g.Grade))
                     .Include(e => e.Enrollments)
                     .Include(e => e.Enrollments.Select(c => c.Course))
                     .ToListAsync();
@@ -37,13 +36,24 @@ namespace SSW.Data.Repositories
             if (includeOptions)
             {
                 return await _context.Students
-                    //.Include(e => e.Enrollments.Select(g => g.Grade))
                     .Include(e => e.Enrollments)
                     .Include(e => e.Enrollments.Select(c => c.Course))
                     .FirstOrDefaultAsync(s => s.Id == id);
             }
 
             return await base.GetByIdAsync(id);
+        }
+
+        public async Task<Student> GetByEmailAsync(string email)
+        {
+            return await _context.Students.Where(s => s.Email == email).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> IsStudentExists(string email)
+        {
+            var student = await _context.Students.Where(s => s.Email == email).FirstOrDefaultAsync();
+
+            return student != null;
         }
     }
 }
