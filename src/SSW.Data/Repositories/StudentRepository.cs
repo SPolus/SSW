@@ -43,5 +43,12 @@ namespace SSW.Data.Repositories
 
             return await base.GetByIdAsync(id);
         }
+
+        public async Task<bool> IsStudentExists(string email)
+        {
+            var student = await _context.Students.Where(s => s.Email == email).FirstOrDefaultAsync();
+
+            return student != null;
+        }
     }
 }

@@ -10,24 +10,23 @@ namespace SSW.Web.ViewModels.Student
     {
         public int Id { get; set; }
 
-        [Display(Name = "First Name")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "First name required")]
+        [Display(Name = "First Name*")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Required field")]
         public string FirstName { get; set; }
 
-        [Display(Name = "Last Name")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Last name required")]
+        [Display(Name = "Last Name*")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Required field")]
         public string LastName { get; set; }
 
-        [Display(Name = "Email")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Email required")]
+        [Display(Name = "Email*")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Required field")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [Display(Name = "Password")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Password required")]
+        [Display(Name = "Password*")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Required field")]
         [DataType(DataType.Password)]
         [MinLength(6, ErrorMessage = "Minimum 6 characters")]
         public string Password { get; set; }
-
     }
 }

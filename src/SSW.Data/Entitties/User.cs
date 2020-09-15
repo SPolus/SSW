@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SSW.Data.Entitties
 {
-    public class Instructor : User
+    public class User : Person
     {
-        public ICollection<CourseAssignment> CourseAssignments { get; set; }
+        public string Email { get; set; }
+
+        public string Password { get; set; }
     }
 }

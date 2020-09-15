@@ -11,6 +11,8 @@ using SSW.Data.Contexts;
 using SSW.Data.Entitties;
 using SSW.Data.Repositories;
 using SSW.Web.ViewModels.Student;
+using System.Web.Security;
+using System.Web.Helpers;
 
 namespace SSW.Web.Controllers
 {
@@ -75,15 +77,29 @@ namespace SSW.Web.Controllers
         }
 
         // POST: Students/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,FirstName,LastName")] Student student)
+        public async Task<ActionResult> Create([Bind(Include = "Id,FirstName,LastName,Email,Password")] StudentCreateVM student)
         {
             if (ModelState.IsValid)
             {
-                await _repository.AddAsync(student);
+                bool isExists = await _repository.IsStudentExists(student.Email);
+
+                if (isExists)
+                {
+                    ModelState.AddModelError("EmailExist", "Student already exists");
+                    return View(student);
+                }
+
+                var newStudent = new Student
+                {
+                    FirstName = student.FirstName,
+                    LastName = student.LastName,
+                    Email = student.Email,
+                    Password = Crypto.HashPassword(student.Password)
+                };
+
+                await _repository.AddAsync(newStudent); // map
                 return RedirectToAction("Index");
             }
 

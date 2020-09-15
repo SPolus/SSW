@@ -11,5 +11,6 @@ namespace SSW.Data.Repositories
     {
         Task<Student> GetByIdAsync(int id, bool includeOptions = true);
         Task<IReadOnlyCollection<Student>> GetAllAsync(bool includeOptions = true);
+        Task<bool> IsStudentExists(string email);
     }
 }
