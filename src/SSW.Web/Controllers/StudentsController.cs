@@ -13,6 +13,7 @@ using SSW.Data.Repositories;
 using SSW.Web.ViewModels.Student;
 using System.Web.Security;
 using System.Web.Helpers;
+using SSW.Web.Filters;
 
 namespace SSW.Web.Controllers
 {
@@ -53,6 +54,7 @@ namespace SSW.Web.Controllers
         }
 
         // GET: Students/Details/5
+        [CustomAuthorize(Roles = "student")]
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
@@ -100,7 +102,7 @@ namespace SSW.Web.Controllers
                     //Password = Crypto.HashPassword(student.Password)
                 };
 
-                await _repository.AddAsync(newStudent); // map
+                await _repository.AddAsync(newStudent);
                 return RedirectToAction("Index");
             }
 
@@ -108,6 +110,7 @@ namespace SSW.Web.Controllers
         }
 
         // GET: Students/Edit/5
+        [CustomAuthorize(Roles = "student")]
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
@@ -126,8 +129,6 @@ namespace SSW.Web.Controllers
         }
 
         // POST: Students/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Id,FirstName,LastName")] Student student)
