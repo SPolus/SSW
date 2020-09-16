@@ -1,4 +1,5 @@
-﻿using SSW.Data.Contexts;
+﻿using Autofac;
+using SSW.Data.Contexts;
 using SSW.Data.Repositories;
 using System;
 using System.Collections.Generic;
@@ -12,34 +13,42 @@ namespace SSW.Web.Filters
 {
     public class CustomAuthorizeAttribute : AuthorizeAttribute
     {
-        public CustomAuthorizeAttribute()
-        {
-        }
-
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            if (httpContext.Request.Cookies.AllKeys.Contains("__AUTH_COOKIE_STUDENT"))
+            var encriptedCookie = httpContext.Request.Cookies["__AUTH_COOKIE_STUDENT"]?.Value;
+
+            if (encriptedCookie == null)
             {
-                var encriptedCookie = httpContext.Request.Cookies["__AUTH_COOKIE_STUDENT"].Value;
-                var cookie = FormsAuthentication.Decrypt(encriptedCookie);
+                return false;
+            }
+            
+            var cookie = FormsAuthentication.Decrypt(encriptedCookie);
 
-                using (UniversityDbContext context = new UniversityDbContext())
-                {
-                    var student = context.Students.Where(s => s.Email == cookie.Name).FirstOrDefault();
+            var studentRepository = DependencyResolver.Current.GetService<IStudentRepository>();
+            
+            bool isStudent = Task.Run(async () => await studentRepository.IsStudentExists(cookie.Name)).Result;
+            bool isInstructor = false;
+            bool isAdmin = false;
 
-                    bool isStudent = student != null;
+            string role = isStudent ? "student" : isInstructor ? "instructor" : isAdmin ? "admin" : "";
 
-                    return Roles.ToLower().Contains("student") && isStudent;
-                }
+            if (string.IsNullOrWhiteSpace(Roles) && (isStudent || isInstructor || isAdmin))
+            {
+                return true;
+            }
+
+            if (Roles.Trim().ToLower().Contains(role))
+            {
+                return true;
             }
 
             return false;
+
         }
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            filterContext.Result = new RedirectResult("Home");
-            //base.HandleUnauthorizedRequest(filterContext);
+            filterContext.Result = new RedirectResult("Accounts/Login");
         }
     }
 

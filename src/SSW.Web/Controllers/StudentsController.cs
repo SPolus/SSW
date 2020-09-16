@@ -17,7 +17,7 @@ using SSW.Web.Filters;
 
 namespace SSW.Web.Controllers
 {
-    [CustomAuthorize(Roles = "admin")]
+    [CustomAuthorize(Roles = "student")]
     public class StudentsController : Controller
     {
         private readonly IStudentRepository _repository;
