@@ -27,7 +27,7 @@ namespace SSW.Web.Controllers
         public ActionResult Login()
         {
             //var a = HttpContext.Request.Cookies.Get(COOKIE);
-            var b = HttpContext.User.
+            
             return View();
         }
 
@@ -50,7 +50,6 @@ namespace SSW.Web.Controllers
                     {
                         Value = encTicket,
                         Expires = DateTime.Now.AddMinutes(timeout),
-                        HttpOnly = true
                     };
 
                     HttpContext.Response.Cookies.Set(cookie);
