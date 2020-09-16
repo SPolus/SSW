@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Configuration;
 
 namespace SSW.Web.Filters
 {
@@ -15,7 +16,7 @@ namespace SSW.Web.Filters
     {
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            var encriptedCookie = httpContext.Request.Cookies["__AUTH_COOKIE_STUDENT"]?.Value;
+            var encriptedCookie = httpContext.Request.Cookies[ConfigurationManager.AppSettings["AuthCookie"]]?.Value;
 
             if (encriptedCookie == null)
             {

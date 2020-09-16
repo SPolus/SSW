@@ -8,14 +8,15 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Configuration;
 
 namespace SSW.Web.Controllers
 {
     public class AccountsController : Controller
     {
-        private const int MOHTN = 43200;
-        private const int HOUR = 60;
-        private const string COOKIE = "__AUTH_COOKIE_STUDENT";
+        private const int LONG = 43200; // 43200 minutes = 1 month
+        private const int SHORT = 5; // minutes
+
         private readonly IStudentRepository _repository;
 
         public AccountsController(IStudentRepository repository)
@@ -26,8 +27,6 @@ namespace SSW.Web.Controllers
         // GET: Account
         public ActionResult Login()
         {
-            //var a = HttpContext.Request.Cookies.Get(COOKIE);
-            
             return View();
         }
 
@@ -42,11 +41,11 @@ namespace SSW.Web.Controllers
                 if (string.Compare(userLogin.Password, student.Password) == 0)
                 //if (string.Compare(Crypto.HashPassword(userLogin.Password), student.Password) == 0)
                 {
-                    int timeout = userLogin.RememberMe ? MOHTN : HOUR;
+                    int timeout = userLogin.RememberMe ? LONG : SHORT;
 
                     var ticket = new FormsAuthenticationTicket(userLogin.Email, userLogin.RememberMe, timeout);
                     var encTicket = FormsAuthentication.Encrypt(ticket);
-                    var cookie = new HttpCookie(COOKIE)
+                    var cookie = new HttpCookie(ConfigurationManager.AppSettings["AuthCookie"])
                     {
                         Value = encTicket,
                         Expires = DateTime.Now.AddMinutes(timeout),

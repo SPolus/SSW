@@ -17,7 +17,7 @@ using SSW.Web.Filters;
 
 namespace SSW.Web.Controllers
 {
-    [CustomAuthorize(Roles = "student")]
+    [CustomAuthorize()]
     public class StudentsController : Controller
     {
         private readonly IStudentRepository _repository;
@@ -102,7 +102,7 @@ namespace SSW.Web.Controllers
                     //Password = Crypto.HashPassword(student.Password)
                 };
 
-                await _repository.AddAsync(newStudent); // map
+                await _repository.AddAsync(newStudent);
                 return RedirectToAction("Index");
             }
 
@@ -128,8 +128,6 @@ namespace SSW.Web.Controllers
         }
 
         // POST: Students/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Id,FirstName,LastName")] Student student)
