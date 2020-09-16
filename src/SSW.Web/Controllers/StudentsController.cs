@@ -17,7 +17,6 @@ using SSW.Web.Filters;
 
 namespace SSW.Web.Controllers
 {
-    [CustomAuthorize()]
     public class StudentsController : Controller
     {
         private readonly IStudentRepository _repository;
@@ -55,6 +54,7 @@ namespace SSW.Web.Controllers
         }
 
         // GET: Students/Details/5
+        [CustomAuthorize(Roles = "student")]
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
@@ -110,6 +110,7 @@ namespace SSW.Web.Controllers
         }
 
         // GET: Students/Edit/5
+        [CustomAuthorize(Roles = "student")]
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)

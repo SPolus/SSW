@@ -17,11 +17,13 @@ namespace SSW.Web.Controllers
         private const int LONG = 43200; // 43200 minutes = 1 month
         private const int SHORT = 5; // minutes
 
-        private readonly IStudentRepository _repository;
+        private readonly IStudentRepository _studentRepo;
+        private readonly IInstructorRepository _instructorRepo;
 
-        public AccountsController(IStudentRepository repository)
+        public AccountsController(IStudentRepository studentRepo, IInstructorRepository instructorRepo)
         {
-            _repository = repository;
+            _studentRepo = studentRepo;
+            _instructorRepo = instructorRepo;
         }
 
         // GET: Account
@@ -34,11 +36,39 @@ namespace SSW.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(UserLoginVM userLogin)
         {
-            var student = await _repository.GetByEmailAsync(userLogin.Email);
+            var student = await _studentRepo.GetByEmailAsync(userLogin.Email);
+            var instructor = await _instructorRepo.GetByEmailAsync(userLogin.Email);
+
+            if (student == null && instructor == null)
+            {
+                ModelState.AddModelError("IncorrectPassword", "Incorrect email or password");
+                return View();
+            }
 
             if (student != null)
             {
                 if (string.Compare(userLogin.Password, student.Password) == 0)
+                //if (string.Compare(Crypto.HashPassword(userLogin.Password), student.Password) == 0)
+                {
+                    int timeout = userLogin.RememberMe ? LONG : SHORT;
+
+                    var ticket = new FormsAuthenticationTicket(userLogin.Email, userLogin.RememberMe, timeout);
+                    var encTicket = FormsAuthentication.Encrypt(ticket);
+                    var cookie = new HttpCookie(ConfigurationManager.AppSettings["AuthCookie"])
+                    {
+                        Value = encTicket,
+                        Expires = DateTime.Now.AddMinutes(timeout),
+                    };
+
+                    HttpContext.Response.Cookies.Set(cookie);
+
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            if (instructor != null)
+            {
+                if (string.Compare(userLogin.Password, instructor.Password) == 0)
                 //if (string.Compare(Crypto.HashPassword(userLogin.Password), student.Password) == 0)
                 {
                     int timeout = userLogin.RememberMe ? LONG : SHORT;
