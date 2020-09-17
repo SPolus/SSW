@@ -3,16 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SSW.Data.Repositories
 {
-    public class EfRepository<T> : IAsyncRepository<T> where T : BaseEntity
+    public class BaseRepository<T> : IAsyncRepository<T> where T : BaseEntity
     {
         private readonly DbContext _context;
 
-        public EfRepository(DbContext context)
+        public BaseRepository(DbContext context)
         {
             _context = context;
         }

@@ -58,36 +58,36 @@ namespace SSW.Web.Controllers
             return View();
         }
 
-        // POST: Instructors/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Email,Password,FirstName,LastName")] InstructorCreateVM instructor)
-        {
-            if (ModelState.IsValid)
-            {
-                bool isExists = await _repository.IsInstructorExists(instructor.Email);
+        //// POST: Instructors/Create
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Create([Bind(Include = "Id,Email,Password,FirstName,LastName")] InstructorCreateVM instructor)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        bool isExists = await _repository.IsInstructorExists(instructor.Email);
 
-                if (isExists)
-                {
-                    ModelState.AddModelError("EmailExist", "Instructor already exists");
-                    return View(instructor);
-                }
+        //        if (isExists)
+        //        {
+        //            ModelState.AddModelError("EmailExist", "Instructor already exists");
+        //            return View(instructor);
+        //        }
 
-                var newInstructor = new Instructor
-                {
-                    FirstName = instructor.FirstName,
-                    LastName = instructor.LastName,
-                    Email = instructor.Email,
-                    Password = instructor.Password
-                    //Password = Crypto.HashPassword(Instructor.Password)
-                };
+        //        var newInstructor = new Instructor
+        //        {
+        //            FirstName = instructor.FirstName,
+        //            LastName = instructor.LastName,
+        //            Email = instructor.Email,
+        //            Password = instructor.Password
+        //            //Password = Crypto.HashPassword(Instructor.Password)
+        //        };
 
-                await _repository.AddAsync(newInstructor);
-                return RedirectToAction("Index");
-            }
+        //        await _repository.AddAsync(newInstructor);
+        //        return RedirectToAction("Index");
+        //    }
 
-            return View(instructor);
-        }
+        //    return View(instructor);
+        //}
 
         // GET: Instructors/Edit/5
         [CustomAuthorize(Roles = "instructor")]
