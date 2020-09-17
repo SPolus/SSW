@@ -5,6 +5,9 @@ namespace SSW.Data.Entitties
 {
     public class Student : BaseEntity
     {
+        //public int Id { get; set; }
+        public virtual User User { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string FirstName { get; set; }
@@ -12,8 +15,6 @@ namespace SSW.Data.Entitties
         [Required]
         [MaxLength(50)]
         public string LastName { get; set; }
-
-        public virtual User User { get; set; }
 
         public virtual ICollection<Enrollment> Enrollments { get; set; }
     }

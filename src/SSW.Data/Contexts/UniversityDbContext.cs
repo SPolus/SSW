@@ -31,6 +31,22 @@ namespace SSW.Data.Contexts
             modelBuilder.Entity<User>()
                 .HasOptional(i => i.Instructor)
                 .WithRequired(k => k.User);
+
+            modelBuilder.Entity<Enrollment>()
+                .HasKey(k => new { k.StudentId, k.CourseId });
+
+            modelBuilder.Entity<Student>()
+                .HasMany(c => c.Enrollments)
+                .WithRequired()
+                .HasForeignKey(fk => fk.StudentId);
+
+            modelBuilder.Entity<Course>()
+                .HasMany(e => e.Enrollments)
+                .WithRequired()
+                .HasForeignKey(fk => fk.CourseId);
+
+            modelBuilder.Entity<CourseAssignment>()
+                .HasKey(k => new { k.InstructorId, k.CourseId });
                 
         }
     }

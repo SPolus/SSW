@@ -16,28 +16,20 @@ namespace SSW.Web.Filters
     {
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            var encriptedCookie = httpContext.Request.Cookies[ConfigurationManager.AppSettings["AuthCookie"]]?.Value;
-
-            if (encriptedCookie == null)
+            if (!httpContext.Request.IsAuthenticated)
             {
                 return false;
             }
-            
-            var cookie = FormsAuthentication.Decrypt(encriptedCookie);
 
-            var studentRepository = DependencyResolver.Current.GetService<IStudentRepository>();
-            var instructorRepository = DependencyResolver.Current.GetService<IInstructorRepository>();
-
-            bool isStudent = false; // Task.Run(async () => await studentRepository.IsStudentExists(cookie.Name)).Result;
-            bool isInstructor = false; //Task.Run(async () => await instructorRepository.IsInstructorExists(cookie.Name)).Result;
-            bool isAdmin = false;
-
-            string role = isStudent ? "student" : isInstructor ? "instructor" : isAdmin ? "admin" : "";
-
-            if (string.IsNullOrWhiteSpace(Roles) && (isStudent || isInstructor || isAdmin))
+            if (string.IsNullOrWhiteSpace(Roles))
             {
                 return true;
             }
+
+            var userRepository = DependencyResolver.Current.GetService<IUserRepository>();
+            var user = Task.Run(async () => await userRepository.GetByEmailAsync(httpContext.User.Identity.Name)).Result;
+
+            string role = user.Student != null ? "student" : user.Instructor != null ? "instructor" : ""; // TODO: Add admin
 
             if (Roles.Trim().ToLower().Contains(role))
             {
@@ -45,12 +37,11 @@ namespace SSW.Web.Filters
             }
 
             return false;
-
         }
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            filterContext.Result = new RedirectResult("Accounts/Login");
+            filterContext.Result = new RedirectResult("Error/Forbidden");
         }
     }
 

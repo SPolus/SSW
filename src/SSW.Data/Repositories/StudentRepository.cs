@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SSW.Data.Repositories
 {
-    public class StudentRepository : EfRepository<Student>, IStudentRepository
+    public class StudentRepository : BaseRepository<Student>, IStudentRepository
     {
         private readonly UniversityDbContext _context;
 
@@ -44,16 +44,14 @@ namespace SSW.Data.Repositories
             return await base.GetByIdAsync(id);
         }
 
-        //public async Task<Student> GetByEmailAsync(string email)
-        //{
-        //    return await _context.Students.Where(s => s.Email == email).FirstOrDefaultAsync();
-        //}
+        public Task<Student> GetByEmailAsync(string email)
+        {
+            return _context.Users.Where(e => e.Email == email).Select(x => x.Student).FirstOrDefaultAsync();
+        }
 
-        //public async Task<bool> IsStudentExists(string email)
-        //{
-        //    var student = await _context.Students.Where(s => s.Email == email).FirstOrDefaultAsync();
-
-        //    return student != null;
-        //}
+        public Task<bool> IsStudentExists(string email)
+        {
+            return _context.Students.Select(x => x.User).AnyAsync(e => e.Email == email);
+        }
     }
 }
