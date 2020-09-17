@@ -58,20 +58,31 @@
     <Compile Include="Entitties\CourseAssignment.cs" />
     <Compile Include="Entitties\Enrollment.cs" />
     <Compile Include="Entitties\Instructor.cs" />
-    <Compile Include="Entitties\Person.cs" />
     <Compile Include="Entitties\Student.cs" />
     <Compile Include="Entitties\User.cs" />
+    <Compile Include="Migrations\202009170714464_InitialMigration.cs" />
+    <Compile Include="Migrations\202009170714464_InitialMigration.designer.cs">
+      <DependentUpon>202009170714464_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\EfRepository.cs" />
+    <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\IAsyncRepository.cs" />
     <Compile Include="Repositories\IInstructorRepository.cs" />
     <Compile Include="Repositories\InstructorRepository.cs" />
     <Compile Include="Repositories\IStudentRepository.cs" />
+    <Compile Include="Repositories\IUserRepository.cs" />
     <Compile Include="Repositories\StudentRepository.cs" />
+    <Compile Include="Repositories\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202009170714464_InitialMigration.resx">
+      <DependentUpon>202009170714464_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

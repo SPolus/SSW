@@ -9,20 +9,28 @@ using System.Threading.Tasks;
 
 namespace SSW.Data.Data
 {
-    public class DataInitializer : DropCreateDatabaseIfModelChanges<UniversityDbContext>
+    public class DataInitializer : DropCreateDatabaseIfModelChanges<UniversityDbContext>//DropCreateDatabaseAlways<UniversityDbContext>
     {
         protected override void Seed(UniversityDbContext context)
         {
+            var users = new List<User>
+            {
+                new User { Email = "test@test.com", Password = "password" },
+                new User { Email = "spvspt@gmail.com", Password = "pavelsolomin"}
+            };
+
+            context.SaveChanges();
+
             var students = new List<Student>
             {
-                new Student { FirstName = "Pavel", LastName = "Solomin" }
+                new Student { FirstName = "Pavel", LastName = "Solomin", User = users.Single(e => e.Email == "spvspt@gmail.com") }
             };
 
             students.ForEach(s => context.Students.Add(s));
 
             var instructors = new List<Instructor>
             {
-                new Instructor { FirstName = "Ruslan", LastName = "Zavyalov" }
+                new Instructor { FirstName = "InstructorName", LastName = "InstructorLastName", User = users.Single(e => e.Email == "test@test.com") }
             };
 
             instructors.ForEach(i => context.Instructors.Add(i));
@@ -63,7 +71,7 @@ namespace SSW.Data.Data
             {
                 new CourseAssignment
                 {
-                    InstructorId = instructors.Single(i => i.FirstName == "Ruslan").Id,
+                    InstructorId = instructors.Single(i => i.FirstName == "InstructorName").Id,
                     CourseId = courses.Single(c => c.Name == "Become a fullstack developer").Id
                 }
             };

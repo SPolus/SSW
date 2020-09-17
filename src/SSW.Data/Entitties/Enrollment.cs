@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SSW.Data.Entitties
 {
-    public class Enrollment : BaseEntity
+    public class Enrollment
     {
         public int StudentId { get; set; }
         public virtual Student Student { get; set; }
