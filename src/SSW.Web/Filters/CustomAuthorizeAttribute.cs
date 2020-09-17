@@ -27,9 +27,9 @@ namespace SSW.Web.Filters
 
             var studentRepository = DependencyResolver.Current.GetService<IStudentRepository>();
             var instructorRepository = DependencyResolver.Current.GetService<IInstructorRepository>();
-            
-            bool isStudent = Task.Run(async () => await studentRepository.IsStudentExists(cookie.Name)).Result;
-            bool isInstructor = Task.Run(async () => await instructorRepository.IsInstructorExists(cookie.Name)).Result;
+
+            bool isStudent = false; // Task.Run(async () => await studentRepository.IsStudentExists(cookie.Name)).Result;
+            bool isInstructor = false; //Task.Run(async () => await instructorRepository.IsInstructorExists(cookie.Name)).Result;
             bool isAdmin = false;
 
             string role = isStudent ? "student" : isInstructor ? "instructor" : isAdmin ? "admin" : "";

@@ -42,16 +42,16 @@ namespace SSW.Data.Repositories
             return await base.GetByIdAsync(id);
         }
 
-        public async Task<Instructor> GetByEmailAsync(string email)
-        {
-            return await _context.Instructors.Where(i => i.Email == email).FirstOrDefaultAsync();
-        }
+        //public async Task<Instructor> GetByEmailAsync(string email)
+        //{
+        //    return await _context.Instructors.Where(i => i.Email == email).FirstOrDefaultAsync();
+        //}
 
-        public async Task<bool> IsInstructorExists(string email)
-        {
-            var instructor = await GetByEmailAsync(email);
+        //public async Task<bool> IsInstructorExists(string email)
+        //{
+        //    var instructor = await GetByEmailAsync(email);
 
-            return instructor != null;
-        }
+        //    return instructor != null;
+        //}
     }
 }

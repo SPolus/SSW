@@ -58,7 +58,6 @@
     <Compile Include="Entitties\CourseAssignment.cs" />
     <Compile Include="Entitties\Enrollment.cs" />
     <Compile Include="Entitties\Instructor.cs" />
-    <Compile Include="Entitties\Person.cs" />
     <Compile Include="Entitties\Student.cs" />
     <Compile Include="Entitties\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
