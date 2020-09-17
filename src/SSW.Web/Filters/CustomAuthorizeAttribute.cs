@@ -1,14 +1,7 @@
-﻿using Autofac;
-using SSW.Data.Contexts;
-using SSW.Data.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using SSW.Data.Repositories;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
-using System.Configuration;
 
 namespace SSW.Web.Filters
 {
@@ -41,7 +34,7 @@ namespace SSW.Web.Filters
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            filterContext.Result = new RedirectResult("Error/Forbidden");
+            filterContext.Result = new RedirectResult("~/Error/Forbidden");
         }
     }
 

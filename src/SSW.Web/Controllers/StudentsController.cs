@@ -55,7 +55,6 @@ namespace SSW.Web.Controllers
         }
 
         // GET: Students/Details/5
-        [CustomAuthorize(Roles = "student")]
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
@@ -79,36 +78,34 @@ namespace SSW.Web.Controllers
             return View();
         }
 
-        //// POST: Students/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Create([Bind(Include = "Id,FirstName,LastName,Email,Password")] StudentCreateVM student)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        bool isExists = await _repository.IsStudentExists(student.Email);
+        // POST: Students/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create([Bind(Include = "Id,FirstName,LastName,Email,Password")] StudentCreateVM student)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isExists = await _repository.IsStudentExists(student.Email);
 
-        //        if (isExists)
-        //        {
-        //            ModelState.AddModelError("EmailExist", "Student already exists");
-        //            return View(student);
-        //        }
+                if (isExists)
+                {
+                    ModelState.AddModelError("EmailExist", "Student already exists");
+                    return View(student);
+                }
 
-        //        var newStudent = new Student
-        //        {
-        //            FirstName = student.FirstName,
-        //            LastName = student.LastName,
-        //            Email = student.Email,
-        //            Password = student.Password
-        //            //Password = Crypto.HashPassword(student.Password)
-        //        };
+                var newStudent = new Student
+                {
+                    FirstName = student.FirstName,
+                    LastName = student.LastName,
+                    User = new User { Email = student.Email, Password = student.Password}
+                };
 
-        //        await _repository.AddAsync(newStudent);
-        //        return RedirectToAction("Index");
-        //    }
+                await _repository.AddAsync(newStudent);
+                return RedirectToAction("Index");
+            }
 
-        //    return View(student);
-        //}
+            return View(student);
+        }
 
         // GET: Students/Edit/5
         [CustomAuthorize(Roles = "student")]

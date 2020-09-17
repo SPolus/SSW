@@ -31,17 +31,17 @@ namespace SSW.Data.Repositories
             return await base.GetAllAsync();
         }
 
-        public async Task<Student> GetByIdAsync(int id, bool includeOptions = true)
+        public Task<Student> GetByIdAsync(int id, bool includeOptions = true)
         {
             if (includeOptions)
             {
-                return await _context.Students
+                return _context.Students
                     .Include(e => e.Enrollments)
                     .Include(e => e.Enrollments.Select(c => c.Course))
                     .FirstOrDefaultAsync(s => s.Id == id);
             }
 
-            return await base.GetByIdAsync(id);
+            return base.GetByIdAsync(id);
         }
 
         public Task<Student> GetByEmailAsync(string email)
