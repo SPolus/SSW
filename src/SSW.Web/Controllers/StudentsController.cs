@@ -8,7 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using SSW.Data.Contexts;
-using SSW.Data.Entitties;
+using SSW.Data.Entities;
 using SSW.Data.Repositories;
 using SSW.Web.ViewModels.Student;
 using System.Web.Security;

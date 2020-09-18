@@ -53,18 +53,13 @@
   <ItemGroup>
     <Compile Include="Contexts\UniversityDbContext.cs" />
     <Compile Include="Data\DataInitializer.cs" />
-    <Compile Include="Entitties\BaseEntity.cs" />
-    <Compile Include="Entitties\Course.cs" />
-    <Compile Include="Entitties\CourseAssignment.cs" />
-    <Compile Include="Entitties\Enrollment.cs" />
-    <Compile Include="Entitties\Instructor.cs" />
-    <Compile Include="Entitties\Student.cs" />
-    <Compile Include="Entitties\User.cs" />
-    <Compile Include="Migrations\202009170714464_InitialMigration.cs" />
-    <Compile Include="Migrations\202009170714464_InitialMigration.designer.cs">
-      <DependentUpon>202009170714464_InitialMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Entities\BaseEntity.cs" />
+    <Compile Include="Entities\Course.cs" />
+    <Compile Include="Entities\CourseAssignment.cs" />
+    <Compile Include="Entities\Enrollment.cs" />
+    <Compile Include="Entities\Instructor.cs" />
+    <Compile Include="Entities\Student.cs" />
+    <Compile Include="Entities\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\IAsyncRepository.cs" />
@@ -78,11 +73,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\202009170714464_InitialMigration.resx">
-      <DependentUpon>202009170714464_InitialMigration.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

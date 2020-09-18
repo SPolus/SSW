@@ -1,10 +1,6 @@
-﻿using SSW.Data.Entitties;
-using System;
+﻿using SSW.Data.Entities;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SSW.Data.Repositories
@@ -18,9 +14,9 @@ namespace SSW.Data.Repositories
             _context = context;
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public Task<T> GetByIdAsync(int id)
         {
-            return await _context.Set<T>().FindAsync(id);
+            return _context.Set<T>().FindAsync(id);
         }
 
         public async Task<IReadOnlyCollection<T>> GetAllAsync()

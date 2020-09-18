@@ -1,8 +1,4 @@
-﻿using SSW.Data.Entitties;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SSW.Data.Entities;
 using System.Threading.Tasks;
 
 namespace SSW.Data.Repositories
@@ -11,5 +7,6 @@ namespace SSW.Data.Repositories
     {
         Task<User> GetByEmailAsync(string email);
         Task<User> GetByEmailAndPasswordAsync(string email, string password);
+        Task<string> GetRoleAsync(string email);
     }
 }

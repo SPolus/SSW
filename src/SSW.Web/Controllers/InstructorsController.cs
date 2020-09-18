@@ -8,7 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using SSW.Data.Contexts;
-using SSW.Data.Entitties;
+using SSW.Data.Entities;
 using SSW.Data.Repositories;
 using SSW.Web.ViewModels.Instructor;
 using SSW.Web.Filters;
@@ -27,14 +27,11 @@ namespace SSW.Web.Controllers
         // GET: Instructors
         public async Task<ActionResult> Index()
         {
-            var context = new UniversityDbContext();
-
             var instructors = await _repository.GetAllAsync();
 
             var results = new List<InstructorIndexVM>();
-            var courseStudents = new List<CourseStudents>();
 
-
+            // TODO: query
             foreach (var instructor in instructors)
             {
                 results.Add(new InstructorIndexVM

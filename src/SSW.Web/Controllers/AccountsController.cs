@@ -1,26 +1,23 @@
 ﻿using SSW.Data.Repositories;
 using SSW.Web.ViewModels.Account;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
-using System.Configuration;
 using SSW.Web.Services;
 
 namespace SSW.Web.Controllers
 {
     public class AccountsController : Controller
     {
-        private readonly IUserRepository _repository;
-        private readonly CookieService _cookieService = new CookieService();
+        private const int _cookieTimeoutInMinutes = 10;
 
-        public AccountsController(IUserRepository repository)
+        private readonly IUserRepository _repository;
+        private readonly CookieService _cookieService;
+
+        public AccountsController(IUserRepository repository, CookieService cookieService)
         {
             _repository = repository;
+            _cookieService = cookieService;
         }
 
         // GET: Account
@@ -41,7 +38,7 @@ namespace SSW.Web.Controllers
                 return View();
             }
 
-            _cookieService.SetAuthenticationToken(authenticatedUser.Email, user.RememberMe, authenticatedUser, 5);
+            _cookieService.SetAuthenticationToken(authenticatedUser.Email, user.RememberMe, authenticatedUser, _cookieTimeoutInMinutes);
             return RedirectToAction("Index", "Home");
         }
 

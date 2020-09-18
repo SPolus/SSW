@@ -1,4 +1,4 @@
-﻿using SSW.Data.Entitties;
+﻿using SSW.Data.Entities;
 using System.Web;
 using System.Web.Security;
 
@@ -17,8 +17,6 @@ namespace SSW.Web.Services
                 HttpOnly = true,
                 Expires = ticket.Expiration
             };
-
-            //FormsAuthentication.SetAuthCookie(userData.Email, isPersistent);
 
             HttpContext.Current.Response.Cookies.Add(cookie);
         }

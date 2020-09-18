@@ -1,10 +1,8 @@
 ﻿using SSW.Data.Contexts;
-using SSW.Data.Entitties;
-using System;
+using SSW.Data.Entities;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SSW.Data.Repositories
@@ -22,9 +20,32 @@ namespace SSW.Data.Repositories
         {
             if (includeCourses)
             {
-                return await _context.Instructors
-                    .Include(i => i.CourseAssignments.Select(c => c.Course))
+                var a = await _context.Instructors
+                    .Select(i => new
+                    {
+                        i.Id,
+                        i.FirstName,
+                        i.LastName,
+                        i.CourseAssignments,
+                        i.User
+                    })
                     .ToListAsync();
+
+                var instructors = new List<Instructor>();
+
+                foreach (var instructor in a)
+                {
+                    instructors.Add(new Instructor
+                    {
+                        Id = instructor.Id,
+                        FirstName = instructor.FirstName,
+                        LastName = instructor.LastName,
+                        CourseAssignments = instructor.CourseAssignments,
+                        User = instructor.User
+                    });
+                }
+
+                return instructors;
             }
 
             return await base.GetAllAsync();
@@ -34,9 +55,27 @@ namespace SSW.Data.Repositories
         {
             if (includeCourses)
             {
-                return await _context.Instructors
-                    .Include(i => i.CourseAssignments.Select(c => c.Course))
-                    .FirstOrDefaultAsync();
+                var a = await _context.Instructors
+                    .Select(i => new
+                    {
+                        i.Id,
+                        i.FirstName,
+                        i.LastName,
+                        i.CourseAssignments,
+                        i.User
+                    })
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                var instructor = new Instructor
+                {
+                    Id = a.Id,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    CourseAssignments = a.CourseAssignments,
+                    User = a.User
+                };
+
+                return instructor;
             }
 
             return await base.GetByIdAsync(id);

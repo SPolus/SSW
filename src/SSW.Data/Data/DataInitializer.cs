@@ -1,15 +1,12 @@
 ﻿using SSW.Data.Contexts;
-using SSW.Data.Entitties;
-using System;
+using SSW.Data.Entities;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SSW.Data.Data
 {
-    public class DataInitializer : DropCreateDatabaseAlways<UniversityDbContext> // DropCreateDatabaseIfModelChanges<UniversityDbContext>
+    public class DataInitializer : DropCreateDatabaseIfModelChanges<UniversityDbContext> //DropCreateDatabaseAlways<UniversityDbContext> 
     {
         protected override void Seed(UniversityDbContext context)
         {
@@ -54,6 +51,7 @@ namespace SSW.Data.Data
                      CourseId = courses.Single(c => c.Name == "Become a fullstack developer").Id,
                      Grade = Grade.C
                 },
+
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.FirstName == "Pavel").Id,

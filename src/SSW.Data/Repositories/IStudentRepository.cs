@@ -1,8 +1,5 @@
-﻿using SSW.Data.Entitties;
-using System;
+﻿using SSW.Data.Entities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SSW.Data.Repositories
