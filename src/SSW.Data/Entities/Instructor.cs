@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace SSW.Data.Entitties
+namespace SSW.Data.Entities
 {
-    public class Student : BaseEntity
+    public class Instructor : BaseEntity
     {
-        //public int Id { get; set; }
-        public virtual User User { get; set; }
+        public User User { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -16,6 +15,6 @@ namespace SSW.Data.Entitties
         [MaxLength(50)]
         public string LastName { get; set; }
 
-        public virtual ICollection<Enrollment> Enrollments { get; set; }
+        public ICollection<CourseAssignment> CourseAssignments { get; set; }
     }
 }

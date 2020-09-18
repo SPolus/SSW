@@ -2,6 +2,7 @@
 using Autofac.Integration.Mvc;
 using SSW.Data.Contexts;
 using SSW.Data.Repositories;
+using SSW.Web.Services;
 using System.Web.Mvc;
 
 namespace SSW.Web.App_Start
@@ -13,10 +14,13 @@ namespace SSW.Web.App_Start
             var builder = new ContainerBuilder();
 
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
+
             builder.RegisterType<StudentRepository>().As<IStudentRepository>();
             builder.RegisterType<InstructorRepository>().As<IInstructorRepository>();
             builder.RegisterType<UserRepository>().As<IUserRepository>();
+
             builder.RegisterType<UniversityDbContext>().InstancePerRequest();
+            builder.RegisterType<CookieService>().InstancePerRequest();
 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));

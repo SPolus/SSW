@@ -1,5 +1,5 @@
 ﻿using SSW.Data.Contexts;
-using SSW.Data.Entitties;
+using SSW.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -26,6 +26,18 @@ namespace SSW.Data.Repositories
         public Task<User> GetByEmailAsync(string email)
         {
             return _context.Users.FirstOrDefaultAsync(e => e.Email == email);
+        }
+
+        public async Task<string> GetRoleAsync(string email)
+        {
+            var a = await _context.Users
+                .Where(u => u.Email == email)
+                .Select(x => new
+                {
+                    Role = x.Student != null ? "student" : x.Instructor != null ? "instructor" : ""
+                }).FirstOrDefaultAsync();
+
+            return a.Role;
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using SSW.Data.Repositories;
+﻿using SSW.Data.Contexts;
+using SSW.Data.Repositories;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -20,9 +23,8 @@ namespace SSW.Web.Filters
             }
 
             var userRepository = DependencyResolver.Current.GetService<IUserRepository>();
-            var user = Task.Run(async () => await userRepository.GetByEmailAsync(httpContext.User.Identity.Name)).Result;
 
-            string role = user.Student != null ? "student" : user.Instructor != null ? "instructor" : ""; // TODO: Add admin
+            string role = Task.Run(async () => await userRepository.GetRoleAsync(httpContext.User.Identity.Name)).Result;
 
             if (Roles.Trim().ToLower().Contains(role))
             {

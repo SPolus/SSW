@@ -1,10 +1,8 @@
 ﻿using SSW.Data.Contexts;
-using SSW.Data.Entitties;
-using System;
+using SSW.Data.Entities;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SSW.Data.Repositories
@@ -23,14 +21,15 @@ namespace SSW.Data.Repositories
             if (includeOptions)
             {
                 var a = await _context.Students
-                .Select(s => new
-                {
-                    s.Id,
-                    s.FirstName,
-                    s.LastName,
-                    Enrollenets = s.Enrollments,
-                    s.User
-                }).ToListAsync();
+                    .Select(s => new
+                    {
+                        s.Id,
+                        s.FirstName,
+                        s.LastName,
+                        s.Enrollments,
+                        s.User
+                    })
+                    .ToListAsync();
 
                 var students = new List<Student>();
 
@@ -41,7 +40,7 @@ namespace SSW.Data.Repositories
                         Id = student.Id,
                         FirstName = student.FirstName,
                         LastName = student.LastName,
-                        Enrollments = student.Enrollenets,
+                        Enrollments = student.Enrollments,
                         User = student.User
                     });
                 }
@@ -50,29 +49,36 @@ namespace SSW.Data.Repositories
             }
 
             return await base.GetAllAsync();
-
-            //if (includeOptions)
-            //{
-            //    return await _context.Students
-            //        .Include(e => e.Enrollments)
-            //        .Include(e => e.Enrollments.Select(c => c.Course))
-            //        .ToListAsync();
-            //}
-
-            //return await base.GetAllAsync();
         }
 
-        public Task<Student> GetByIdAsync(int id, bool includeOptions = true)
+        public async Task<Student> GetByIdAsync(int id, bool includeOptions = true)
         {
             if (includeOptions)
             {
-                return _context.Students
-                    .Include(e => e.Enrollments)
-                    .Include(e => e.Enrollments.Select(c => c.Course))
-                    .FirstOrDefaultAsync(s => s.Id == id);
+                var a = await _context.Students
+                    .Select(s => new
+                    {
+                        s.Id,
+                        s.FirstName,
+                        s.LastName,
+                        s.Enrollments,
+                        s.User
+                    })
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                var student = new Student
+                {
+                    Id = a.Id,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    Enrollments = a.Enrollments,
+                    User = a.User
+                };
+
+                return student;
             }
 
-            return base.GetByIdAsync(id);
+            return await base.GetByIdAsync(id);
         }
 
         public Task<Student> GetByEmailAsync(string email)

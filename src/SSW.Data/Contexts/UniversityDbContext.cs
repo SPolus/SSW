@@ -1,5 +1,5 @@
 ﻿using SSW.Data.Data;
-using SSW.Data.Entitties;
+using SSW.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -13,6 +13,7 @@ namespace SSW.Data.Contexts
     {
         public UniversityDbContext() : base("UniversityConnection")
         {
+            Configuration.LazyLoadingEnabled = false;
         }
 
         public DbSet<User> Users { get; set; }

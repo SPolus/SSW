@@ -1,4 +1,4 @@
-﻿using SSW.Data.Entitties;
+﻿using SSW.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
