@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SSW.Data.Data
 {
-    public class DataInitializer : DropCreateDatabaseIfModelChanges<UniversityDbContext>//DropCreateDatabaseAlways<UniversityDbContext>
+    public class DataInitializer : DropCreateDatabaseAlways<UniversityDbContext> // DropCreateDatabaseIfModelChanges<UniversityDbContext>
     {
         protected override void Seed(UniversityDbContext context)
         {
@@ -37,7 +37,8 @@ namespace SSW.Data.Data
 
             var courses = new List<Course>
             {
-                new Course { Name = "Become a fullstack developer" }
+                new Course { Name = "Become a fullstack developer" },
+                new Course { Name = "Learn Backbone" }
             };
 
             courses.ForEach(c => context.Courses.Add(c));
@@ -52,6 +53,12 @@ namespace SSW.Data.Data
                      StudentId = students.Single(s => s.FirstName == "Pavel").Id,
                      CourseId = courses.Single(c => c.Name == "Become a fullstack developer").Id,
                      Grade = Grade.C
+                },
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.FirstName == "Pavel").Id,
+                    CourseId = courses.Single(c => c.Name == "Learn Backbone").Id,
+                    Grade = Grade.F
                 }
             };
 

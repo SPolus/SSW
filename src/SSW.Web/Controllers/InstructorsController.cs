@@ -27,9 +27,25 @@ namespace SSW.Web.Controllers
         // GET: Instructors
         public async Task<ActionResult> Index()
         {
+            var context = new UniversityDbContext();
+
             var instructors = await _repository.GetAllAsync();
 
-            return View(instructors);
+            var results = new List<InstructorIndexVM>();
+            var courseStudents = new List<CourseStudents>();
+
+
+            foreach (var instructor in instructors)
+            {
+                results.Add(new InstructorIndexVM
+                {
+                    Id = instructor.Id,
+                    FullName = $"{instructor.LastName} {instructor.FirstName}",
+                    CourseStudents = new List<CourseStudents> { new CourseStudents { CourseName = "Course name", StudentsCount = 0 } }
+                });
+            }
+
+            return View(results);
         }
 
 

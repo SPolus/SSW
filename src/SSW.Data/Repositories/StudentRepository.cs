@@ -22,13 +22,44 @@ namespace SSW.Data.Repositories
         {
             if (includeOptions)
             {
-                return await _context.Students
-                    .Include(e => e.Enrollments)
-                    .Include(e => e.Enrollments.Select(c => c.Course))
-                    .ToListAsync();
+                var a = await _context.Students
+                .Select(s => new
+                {
+                    s.Id,
+                    s.FirstName,
+                    s.LastName,
+                    Enrollenets = s.Enrollments,
+                    s.User
+                }).ToListAsync();
+
+                var students = new List<Student>();
+
+                foreach (var student in a)
+                {
+                    students.Add(new Student
+                    {
+                        Id = student.Id,
+                        FirstName = student.FirstName,
+                        LastName = student.LastName,
+                        Enrollments = student.Enrollenets,
+                        User = student.User
+                    });
+                }
+
+                return students;
             }
 
             return await base.GetAllAsync();
+
+            //if (includeOptions)
+            //{
+            //    return await _context.Students
+            //        .Include(e => e.Enrollments)
+            //        .Include(e => e.Enrollments.Select(c => c.Course))
+            //        .ToListAsync();
+            //}
+
+            //return await base.GetAllAsync();
         }
 
         public Task<Student> GetByIdAsync(int id, bool includeOptions = true)

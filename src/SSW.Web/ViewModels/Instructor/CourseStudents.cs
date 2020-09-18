@@ -10,7 +10,7 @@ namespace SSW.Web.ViewModels.Instructor
     public class CourseStudents
     {
         [Display(Name = "Course")]
-        public Course Course { get; set; }
+        public string CourseName { get; set; }
 
         [Display(Name = "Count of students")]
         public int StudentsCount { get; set; }
