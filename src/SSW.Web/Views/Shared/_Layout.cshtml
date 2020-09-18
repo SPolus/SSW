@@ -23,8 +23,8 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("Students", "Index", "Students")</li>
                     <li>@Html.ActionLink("Instructors", "Index", "Instructors")</li>
-                    <li>@Html.ActionLink("Login", "Login", "Accounts")</li>
                 </ul>
+                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>

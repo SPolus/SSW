@@ -27,9 +27,25 @@ namespace SSW.Web.Controllers
         // GET: Instructors
         public async Task<ActionResult> Index()
         {
+            var context = new UniversityDbContext();
+
             var instructors = await _repository.GetAllAsync();
 
-            return View(instructors);
+            var results = new List<InstructorIndexVM>();
+            var courseStudents = new List<CourseStudents>();
+
+
+            foreach (var instructor in instructors)
+            {
+                results.Add(new InstructorIndexVM
+                {
+                    Id = instructor.Id,
+                    FullName = $"{instructor.LastName} {instructor.FirstName}",
+                    CourseStudents = new List<CourseStudents> { new CourseStudents { CourseName = "Course name", StudentsCount = 0 } }
+                });
+            }
+
+            return View(results);
         }
 
 
@@ -58,36 +74,34 @@ namespace SSW.Web.Controllers
             return View();
         }
 
-        //// POST: Instructors/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Create([Bind(Include = "Id,Email,Password,FirstName,LastName")] InstructorCreateVM instructor)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        bool isExists = await _repository.IsInstructorExists(instructor.Email);
+        // POST: Instructors/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create([Bind(Include = "Id,Email,Password,FirstName,LastName")] InstructorCreateVM instructor)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isExists = await _repository.IsInstructorExists(instructor.Email);
 
-        //        if (isExists)
-        //        {
-        //            ModelState.AddModelError("EmailExist", "Instructor already exists");
-        //            return View(instructor);
-        //        }
+                if (isExists)
+                {
+                    ModelState.AddModelError("EmailExist", "Instructor already exists");
+                    return View(instructor);
+                }
 
-        //        var newInstructor = new Instructor
-        //        {
-        //            FirstName = instructor.FirstName,
-        //            LastName = instructor.LastName,
-        //            Email = instructor.Email,
-        //            Password = instructor.Password
-        //            //Password = Crypto.HashPassword(Instructor.Password)
-        //        };
+                var newInstructor = new Instructor
+                {
+                    FirstName = instructor.FirstName,
+                    LastName = instructor.LastName,
+                    User = new User { Email = instructor.Email, Password = instructor.Password }
+                };
 
-        //        await _repository.AddAsync(newInstructor);
-        //        return RedirectToAction("Index");
-        //    }
+                await _repository.AddAsync(newInstructor);
+                return RedirectToAction("Index");
+            }
 
-        //    return View(instructor);
-        //}
+            return View(instructor);
+        }
 
         // GET: Instructors/Edit/5
         [CustomAuthorize(Roles = "instructor")]

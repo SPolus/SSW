@@ -49,7 +49,7 @@ namespace SSW.Web.Controllers
         public ActionResult LogOut()
         {
             FormsAuthentication.SignOut();
-            return RedirectToAction("Index, Home");
+            return RedirectToAction("Index", new { controller = "Home", area = string.Empty });
         }
 
     }

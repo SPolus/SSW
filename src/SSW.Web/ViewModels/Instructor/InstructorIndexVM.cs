@@ -12,6 +12,6 @@ namespace SSW.Web.ViewModels.Instructor
         public int Id { get; set; }
         [Display(Name = "Instructor")]
         public string FullName { get; set; }
-        public IList<CourseStudents> CourseStudents { get; set; }
+        public List<CourseStudents> CourseStudents { get; set; }
     }
 }
