@@ -21,16 +21,21 @@ namespace SSW.Web.Controllers
     public class StudentsController : Controller
     {
         private readonly IStudentRepository _repository;
+        private readonly IRepository<Student> _repo;
 
-        public StudentsController(IStudentRepository repository)
+        public StudentsController(IStudentRepository repository, IRepository<Student> repo)
         {
             _repository = repository;
+            _repo = repo;
         }
 
         // GET: Students
         public async Task<ActionResult> Index()
         {
             var students = await _repository.GetAllAsync();
+            var st = await _repo.ToListAsync();
+            var stu = await _repo.ToListAsync(x => x.Enrollments);
+            var stud = await _repo.ToListAsync(x => new { x.LastName, Course = x.Enrollments.Select(c => c.Course.Name) });
 
             var results = new List<StudentIndexVM>();
 
