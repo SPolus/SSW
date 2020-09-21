@@ -1,12 +1,10 @@
 ﻿using SSW.Data.Contexts;
 using SSW.Data.Entities;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SSW.Data.Repositories
@@ -43,6 +41,29 @@ namespace SSW.Data.Repositories
         public async Task<ICollection<TResult>> ToListAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> selector)
         {
             return await _context.Set<TEntity>().Where(where).Select(selector).ToListAsync();
+        }
+
+        public Task<bool> Exist(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _context.Set<TEntity>().AnyAsync(predicate);
+        }
+
+        public async Task AddAsync(TEntity entity)
+        {
+            _context.Set<TEntity>().Add(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(TEntity entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(TEntity entity)
+        {
+            _context.Set<TEntity>().Remove(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

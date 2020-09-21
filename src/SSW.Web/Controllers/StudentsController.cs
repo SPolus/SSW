@@ -17,46 +17,40 @@ using SSW.Web.Filters;
 
 namespace SSW.Web.Controllers
 {
-    [CustomAuthorize(Roles = "instructor")]
+    [CustomAuthorize(Role.Student, Role.Instructor)]
     public class StudentsController : Controller
     {
-        private readonly IStudentRepository _repository;
-        private readonly IRepository<Student> _repo;
+        private readonly IRepository<Student> _repository;
 
-        public StudentsController(IStudentRepository repository, IRepository<Student> repo)
+        public StudentsController(IRepository<Student> repository)
         {
             _repository = repository;
-            _repo = repo;
         }
 
         // GET: Students
         public async Task<ActionResult> Index()
         {
-            var students = await _repository.GetAllAsync();
-            var st = await _repo.ToListAsync();
-            var stu = await _repo.ToListAsync(x => x.Enrollments);
-            var stud = await _repo.ToListAsync(x => new { x.LastName, Course = x.Enrollments.Select(c => c.Course.Name) });
-
-            var results = new List<StudentIndexVM>();
-
-            foreach (var student in students)
+            var f = await _repository.ToListAsync(s => new
             {
-                var avg = student.Enrollments.Average(x => (int?)x.Grade);
+                s.Id,
+                s.User.FirstName,
+                s.User.LastName,
+                Grades = s.Enrollments.Where(e => e.Grade != null).Select(g => (int)g.Grade)
+            });
 
-                if (avg != null)
-                {
-                    avg = Math.Round((double)avg, 0, MidpointRounding.AwayFromZero);
-                }
+            var students = new List<StudentIndexVM>();
 
-                results.Add(new StudentIndexVM
+            foreach (var student in f)
+            {
+                students.Add(new StudentIndexVM
                 {
                     Id = student.Id,
                     FullName = $"{student.LastName} {student.FirstName}",
-                    AvgGrade = (Grade?)avg
+                    AvgGrade = student.Grades.ToList().Count != 0 ? (Grade?)Math.Round(student.Grades.Average(), 0, MidpointRounding.AwayFromZero) : null
                 });
             }
 
-            return View(results);
+            return View(students);
         }
 
         // GET: Students/Details/5
@@ -67,7 +61,7 @@ namespace SSW.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var student = await _repository.GetByIdAsync((int)id);
+            var student = await _repository.FirstOrDefaultAsync((int)id);
 
             if (student == null)
             {
@@ -90,7 +84,7 @@ namespace SSW.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool isExists = await _repository.IsStudentExists(student.Email);
+                bool isExists = await _repository.Exist(x => x.User.Email == student.Email);
 
                 if (isExists)
                 {
@@ -100,9 +94,7 @@ namespace SSW.Web.Controllers
 
                 var newStudent = new Student
                 {
-                    FirstName = student.FirstName,
-                    LastName = student.LastName,
-                    User = new User { Email = student.Email, Password = student.Password}
+                    User = new User { Email = student.Email, Password = student.Password, FirstName = student.FirstName, LastName = student.LastName }
                 };
 
                 await _repository.AddAsync(newStudent);
@@ -113,7 +105,6 @@ namespace SSW.Web.Controllers
         }
 
         // GET: Students/Edit/5
-        [CustomAuthorize(Roles = "student")]
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
@@ -121,7 +112,7 @@ namespace SSW.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var student = await _repository.GetByIdAsync((int)id);
+            var student = await _repository.FirstOrDefaultAsync((int)id);
 
             if (student == null)
             {
@@ -153,7 +144,7 @@ namespace SSW.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var student = await _repository.GetByIdAsync((int)id);
+            var student = await _repository.FirstOrDefaultAsync((int)id);
 
             if (student == null)
             {
@@ -168,7 +159,7 @@ namespace SSW.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            var student = await _repository.GetByIdAsync((int)id);
+            var student = await _repository.FirstOrDefaultAsync((int)id);
             await _repository.DeleteAsync(student);
             
             return RedirectToAction("Index");

@@ -13,5 +13,10 @@ namespace SSW.Data.Repositories
         Task<ICollection<TEntity>> ToListAsync();
         Task<ICollection<TResult>> ToListAsync<TResult>(Expression<Func<TEntity, TResult>> selector);
         Task<ICollection<TResult>> ToListAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> selector);
+        Task<bool> Exist(Expression<Func<TEntity, bool>> predicate);
+
+        Task AddAsync(TEntity entity);
+        Task UpdateAsync(TEntity entity);
+        Task DeleteAsync(TEntity entity);
     }
 }

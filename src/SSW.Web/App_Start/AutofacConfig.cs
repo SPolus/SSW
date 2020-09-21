@@ -15,9 +15,6 @@ namespace SSW.Web.App_Start
 
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
-            builder.RegisterType<StudentRepository>().As<IStudentRepository>();
-            builder.RegisterType<InstructorRepository>().As<IInstructorRepository>();
-            builder.RegisterType<UserRepository>().As<IUserRepository>();
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerDependency();
 
             builder.RegisterType<UniversityDbContext>().InstancePerRequest();

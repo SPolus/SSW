@@ -6,28 +6,38 @@ using System.Linq;
 
 namespace SSW.Data.Data
 {
-    public class DataInitializer : DropCreateDatabaseIfModelChanges<UniversityDbContext> //DropCreateDatabaseAlways<UniversityDbContext> 
+    public class DataInitializer : DropCreateDatabaseIfModelChanges<UniversityDbContext> //DropCreateDatabaseAlways<UniversityDbContext>// 
     {
         protected override void Seed(UniversityDbContext context)
         {
             var users = new List<User>
             {
-                new User { Email = "test@test.com", Password = "password" },
-                new User { Email = "spvspt@gmail.com", Password = "pavelsolomin"}
+                new User { Email = "fullstack@mail.com", Password = "fullstack", FirstName = "Full", LastName = "Stack" },
+                new User { Email = "billgates@mail.com", Password = "billgates", FirstName = "Bill", LastName = "Gates" },
+                new User { Email = "stevejobs@mail.com", Password = "stevejobs", FirstName = "Steve", LastName = "Jobs" },
+                new User { Email = "pavel@mail.com", Password = "pavelsolomin", FirstName = "Pavel", LastName = "Solomin"},
+                new User { Email = "ivan@mail.com", Password = "ivanivanov", FirstName = "Ivan", LastName = "Ivanov"},
+                new User { Email = "peter@mail.com", Password = "peterpetrov", FirstName = "Peter", LastName = "Petrov" },
+                new User { Email = "john@mail.com", Password = "johnsmith", FirstName = "John", LastName = "Smith" }
             };
 
             context.SaveChanges();
 
             var students = new List<Student>
             {
-                new Student { FirstName = "Pavel", LastName = "Solomin", User = users.Single(e => e.Email == "spvspt@gmail.com") }
+                new Student { User = users.Single(e => e.Email == "pavel@mail.com") },
+                new Student { User = users.Single(e => e.Email == "ivan@mail.com") },
+                new Student { User = users.Single(e => e.Email == "peter@mail.com") },
+                new Student { User = users.Single(e => e.Email == "john@mail.com") },
             };
 
             students.ForEach(s => context.Students.Add(s));
 
             var instructors = new List<Instructor>
             {
-                new Instructor { FirstName = "InstructorName", LastName = "InstructorLastName", User = users.Single(e => e.Email == "test@test.com") }
+                new Instructor { User = users.Single(e => e.Email == "fullstack@mail.com") },
+                new Instructor { User = users.Single(e => e.Email == "billgates@mail.com") },
+                new Instructor { User = users.Single(e => e.Email == "stevejobs@mail.com") }
             };
 
             instructors.ForEach(i => context.Instructors.Add(i));
@@ -35,7 +45,9 @@ namespace SSW.Data.Data
             var courses = new List<Course>
             {
                 new Course { Name = "Become a fullstack developer" },
-                new Course { Name = "Learn Backbone" }
+                new Course { Name = "Learn Backbone" },
+                new Course { Name = "Introduction to Microsoft" },
+                new Course { Name = "Introduction to iOS" }
             };
 
             courses.ForEach(c => context.Courses.Add(c));
@@ -47,16 +59,37 @@ namespace SSW.Data.Data
             {
                 new Enrollment
                 {
-                     StudentId = students.Single(s => s.FirstName == "Pavel").Id,
+                     StudentId = students.Single(s => s.User.Email == "pavel@mail.com").Id,
                      CourseId = courses.Single(c => c.Name == "Become a fullstack developer").Id,
                      Grade = Grade.C
                 },
 
                 new Enrollment
                 {
-                    StudentId = students.Single(s => s.FirstName == "Pavel").Id,
+                    StudentId = students.Single(s => s.User.Email == "pavel@mail.com").Id,
                     CourseId = courses.Single(c => c.Name == "Learn Backbone").Id,
                     Grade = Grade.F
+                },
+
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.User.Email == "ivan@mail.com").Id,
+                    CourseId = courses.Single(c => c.Name == "Become a fullstack developer").Id,
+                    Grade = Grade.A
+                },
+
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.User.Email == "ivan@mail.com").Id,
+                    CourseId = courses.Single(c => c.Name == "Learn Backbone").Id,
+                    //Grade = Grade.A
+                },
+
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.User.Email == "peter@mail.com").Id,
+                    CourseId = courses.Single(c => c.Name == "Become a fullstack developer").Id,
+                    Grade = Grade.B
                 }
             };
 
@@ -76,8 +109,26 @@ namespace SSW.Data.Data
             {
                 new CourseAssignment
                 {
-                    InstructorId = instructors.Single(i => i.FirstName == "InstructorName").Id,
+                    InstructorId = instructors.Single(i => i.User.Email == "fullstack@mail.com").Id,
                     CourseId = courses.Single(c => c.Name == "Become a fullstack developer").Id
+                },
+
+                new CourseAssignment
+                {
+                    InstructorId = instructors.Single(i => i.User.Email == "fullstack@mail.com").Id,
+                    CourseId = courses.Single(c => c.Name == "Learn Backbone").Id
+                },
+
+                new CourseAssignment
+                {
+                    InstructorId = instructors.Single(i => i.User.Email == "billgates@mail.com").Id,
+                    CourseId = courses.Single(c => c.Name == "Introduction to Microsoft").Id
+                },
+
+                new CourseAssignment
+                {
+                    InstructorId = instructors.Single(i => i.User.Email == "stevejobs@mail.com").Id,
+                    CourseId = courses.Single(c => c.Name == "Introduction to iOS").Id
                 }
             };
 

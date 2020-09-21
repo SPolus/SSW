@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Security;
 using SSW.Web.Services;
+using SSW.Data.Entities;
 
 namespace SSW.Web.Controllers
 {
@@ -11,13 +12,13 @@ namespace SSW.Web.Controllers
     {
         private const int _cookieTimeoutInMinutes = 10;
 
-        private readonly IUserRepository _repository;
         private readonly CookieService _cookieService;
+        private readonly IRepository<User> _repository;
 
-        public AccountsController(IUserRepository repository, CookieService cookieService)
+        public AccountsController(CookieService cookieService, IRepository<User> repository)
         {
-            _repository = repository;
             _cookieService = cookieService;
+            _repository = repository;
         }
 
         // GET: Account
@@ -30,7 +31,7 @@ namespace SSW.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(UserLoginVM user)
         {
-            var authenticatedUser = await _repository.GetByEmailAndPasswordAsync(user.Email, user.Password);
+            var authenticatedUser = await _repository.FirstOrDefaultAsync(x => x.Email == user.Email && x.Password == user.Password, u => new { u.Email });
 
             if (authenticatedUser == null)
             {
@@ -38,7 +39,7 @@ namespace SSW.Web.Controllers
                 return View();
             }
 
-            _cookieService.SetAuthenticationToken(authenticatedUser.Email, user.RememberMe, authenticatedUser, _cookieTimeoutInMinutes);
+            _cookieService.SetAuthenticationToken(authenticatedUser.Email, user.RememberMe, _cookieTimeoutInMinutes);
             return RedirectToAction("Index", "Home");
         }
 

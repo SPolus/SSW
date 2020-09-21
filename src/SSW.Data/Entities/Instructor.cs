@@ -7,14 +7,6 @@ namespace SSW.Data.Entities
     {
         public User User { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string FirstName { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public string LastName { get; set; }
-
         public ICollection<CourseAssignment> CourseAssignments { get; set; }
     }
 }

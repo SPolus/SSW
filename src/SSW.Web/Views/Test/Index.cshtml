@@ -1,0 +1,35 @@
+﻿@model SSW.Data.Entities.User
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+<br />
+
+<div id="btn">
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#btnGet').click(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "Test/AjaxGetData",
+                    contentType: "application/json; charset=utf-8",
+                  
+                });
+            });
+        });
+    </script>
+
+}
+
+<div title = "GetData">
+    <input type="button" id="btnGet" value="Get Data" />
+    <input type="text" id="Email" placeholder = "Email" />
+    <input type="text" id="FirstName" placeholder = "First Name" />
+    <input type="text" id="LastName" placeholder = "Last Name" />
+ </div>

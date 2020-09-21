@@ -6,9 +6,9 @@ namespace SSW.Web.Services
 {
     public class CookieService
     {
-        public void SetAuthenticationToken(string name, bool isPersistent, User userData, int timeout)
+        public void SetAuthenticationToken(string name, bool isPersistent, int timeout)
         {
-            var ticket = new FormsAuthenticationTicket(userData.Email, isPersistent, timeout);
+            var ticket = new FormsAuthenticationTicket(name, isPersistent, timeout);
 
             var cookieData = FormsAuthentication.Encrypt(ticket);
 

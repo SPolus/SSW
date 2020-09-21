@@ -12,6 +12,14 @@ namespace SSW.Data.Entities
         [MaxLength(100)]
         public string Password { get; set; }
 
+        [Required]
+        [MaxLength(50)]
+        public string FirstName { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string LastName { get; set; }
+
         public Student Student { get; set; }
 
         public Instructor Instructor { get; set; }
