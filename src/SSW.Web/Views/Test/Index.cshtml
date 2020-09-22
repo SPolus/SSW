@@ -4,32 +4,113 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
-<br />
+<h2>Create User</h2>
 
-<div id="btn">
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", @id = "FirstName" } })
+            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", @id = "LastName" } })
+            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @id = "UserEmail" } })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            @Html.ValidationMessage("EmailExist", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @id = "UserPassword" } })
+            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" id="btnSave" />
+        </div>
+    </div>
+
+    <table id="tblUser" class="table table-bordered table-striped table-responsive table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Password</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+<div>
+    @Html.ActionLink("Home", "Index", "Home")
 </div>
 
 @section Scripts {
-    <script src="~/Scripts/jquery-3.4.1.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#btnGet').click(function () {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(function () {
+            LoadData();
+            $("#btnSave").click(function () {
+                var usr = {};
+                usr.FirstName = $("#FirstName").val();
+                usr.LastName = $("#LastName").val();
+                usr.Email = $("#UserEmail").val();
+                usr.Password = $("#UserPassword").val();
+
                 $.ajax({
-                    type: "GET",
-                    url: "Test/AjaxGetData",
-                    contentType: "application/json; charset=utf-8",
-                  
+                    type: "POST",
+                    url: "@Url.Action("CreateUser", "Home")",
+                    data: usr,
+                    dataType: "json",
+                    success: function () {
+                        LoadData();
+                    }
                 });
             });
         });
+
+        function LoadData() {
+            $("#tblUser tbody tr").remove();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetUsers", "Home")",
+                dataType: "json",
+                data: { id: "" },
+                success: function (data) {
+                    $.each(JSON.parse(data), function () {
+                        let rows = "<tr>"
+                            + "<td>" + this.Id + "</td>"
+                            + "<td>" + this.FirstName + "</td>"
+                            + "<td>" + this.LastName + "</td>"
+                            + "<td>" + this.Email + "</td>"
+                            + "<td>" + this.Password + "</td>"
+                            + "</tr>";
+                        $("#tblUser tbody").append(rows);
+                    });
+                }
+            });
+        }
     </script>
-
 }
-
-<div title = "GetData">
-    <input type="button" id="btnGet" value="Get Data" />
-    <input type="text" id="Email" placeholder = "Email" />
-    <input type="text" id="FirstName" placeholder = "First Name" />
-    <input type="text" id="LastName" placeholder = "Last Name" />
- </div>
