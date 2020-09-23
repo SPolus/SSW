@@ -27,20 +27,35 @@ namespace SSW.Web.Controllers
             return View();
         }
 
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<ActionResult> Login(UserLoginVM user)
+        // {
+        //     var authenticatedUser = await _repository.FirstOrDefaultAsync(x => x.Email == user.Email && x.Password == user.Password, u => new { u.Email });
+        //
+        //     if (authenticatedUser == null)
+        //     {
+        //         ModelState.AddModelError("IncorrectPassword", "Incorrect email or password");
+        //         return View();
+        //     }
+        //
+        //     _cookieService.SetAuthenticationToken(authenticatedUser.Email, user.RememberMe, _cookieTimeoutInMinutes);
+        //     return RedirectToAction("Index", "Home");
+        // }
+        
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(UserLoginVM user)
+        public async Task<JsonResult> Login(UserLoginVM user)
         {
             var authenticatedUser = await _repository.FirstOrDefaultAsync(x => x.Email == user.Email && x.Password == user.Password, u => new { u.Email });
 
             if (authenticatedUser == null)
             {
                 ModelState.AddModelError("IncorrectPassword", "Incorrect email or password");
-                return View();
+                return Json(new {success = false, responseText = "Incorrect email or password"});
             }
 
             _cookieService.SetAuthenticationToken(authenticatedUser.Email, user.RememberMe, _cookieTimeoutInMinutes);
-            return RedirectToAction("Index", "Home");
+            return Json(new {success = true, responseText = ""});
         }
 
         [Authorize]
