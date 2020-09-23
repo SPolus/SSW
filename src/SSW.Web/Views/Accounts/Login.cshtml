@@ -69,18 +69,26 @@
                     url: "@Url.Action("Login", "Accounts")",
                     dataType: "json",
                     data: user,
+                    beforeSend: function () {
+                        $("#btnLogin").attr("disabled", true).css("cursor", "default").fadeIn();
+                    },
+                    complete: function () {
+                        $("#btnLogin").attr("disabled", false);
+                    },
                     success: function (response) {
                         if (response.success) {
-                            alert(response.responseText);
                             location.href = "/Home/Index"
                         } else {
-                            alert(response.responseText);
+                            alert("Status code: " + response.statusCode + ". " + response.statusCodeText + ". " + response.responseText);
                         }
                     },
-                    error: function () {
-                        alert("Error");
+                    error: function (xhr) {
+                        if (xhr.status < 400) {
+                            alert("Error code: 400. Bad request");
+                        } else {
+                            alert("Error code: " + xhr.status + ". " + xhr.statusText);
+                        }
                     }
-
                 });
             });
         });
