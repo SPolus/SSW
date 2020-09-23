@@ -8,7 +8,7 @@
 <h2>Login</h2>
 
 
-@using (Html.BeginForm("Login", "Accounts", FormMethod.Post, new { id="loginForm" }))
+@using (Html.BeginForm())
 {
     <div class="form-horizontal">
         <hr />
@@ -68,7 +68,8 @@
                     type: "POST",
                     url: "@Url.Action("Login", "Accounts")",
                     dataType: "json",
-                    data: $("#loginForm").serialize(),
+                    contentType: "application/json",
+                    data: JSON.stringify(user),
                     beforeSend: function () {
                         $("#btnLogin").attr("disabled", true).css("cursor", "default").fadeIn();
                     },
