@@ -81,7 +81,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "@Url.Action("CreateUser", "Home")",
+                    url: "@Url.Action("CreateUser", "Test")",
                     data: usr,
                     dataType: "json",
                     success: function () {
@@ -95,7 +95,7 @@
             $("#tblUser tbody tr").remove();
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("GetUsers", "Home")",
+                url: "@Url.Action("GetUsers", "Test")",
                 dataType: "json",
                 data: { id: "" },
                 success: function (data) {
