@@ -1,116 +1,78 @@
-﻿@model SSW.Data.Entities.User
+﻿
 @{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
 }
 
-<h2>Create User</h2>
+<!DOCTYPE html>
 
-<div class="form-horizontal">
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", @id = "FirstName" } })
-            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-        </div>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>List of users</title>
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+
+    <div class="container" id="wrapper">
+
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", @id = "LastName" } })
-            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @id = "UserEmail" } })
-            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-            @Html.ValidationMessage("EmailExist", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @id = "UserPassword" } })
-            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" id="btnSave" />
-        </div>
-    </div>
-
-    <table id="tblUser" class="table table-bordered table-striped table-responsive table-hover">
+    <script type="text/template" id="table_template">
+    <table>
         <thead>
             <tr>
-                <th>Id</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Password</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+            <% _.each(users, function(user)) { %>
+            <tr>
+                <td><%= user.get('FirstName') %></td>
+                <td><%= user.get('LastName') %></td>
+                <td><%= user.get('Email') %></td>
+                <td><%= user.get('Password') %></td>
+            </tr>
+            <% } %>
+        </tbody>
     </table>
-</div>
+    </script>
 
+    
 
-<div>
-    @Html.ActionLink("Home", "Index", "Home")
-</div>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/underscore.js"></script>
+    <script src="~/Scripts/backbone.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script>
+        var User = Backbone.Model.extend();
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-    <script type="text/javascript">
-        $(function () {
-            LoadData();
-            $("#btnSave").click(function () {
-                var usr = {};
-                usr.FirstName = $("#FirstName").val();
-                usr.LastName = $("#LastName").val();
-                usr.Email = $("#UserEmail").val();
-                usr.Password = $("#UserPassword").val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("CreateUser", "Test")",
-                    data: usr,
-                    dataType: "json",
-                    success: function () {
-                        LoadData();
-                    }
-                });
-            });
+        var Users = Backbone.Collection.extend({
+            model: User,
+            url: 'Test/GetUsers'
         });
 
-        function LoadData() {
-            $("#tblUser tbody tr").remove();
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("GetUsers", "Test")",
-                dataType: "json",
-                data: { id: "" },
-                success: function (data) {
-                    $.each(JSON.parse(data), function () {
-                        let rows = "<tr>"
-                            + "<td>" + this.Id + "</td>"
-                            + "<td>" + this.FirstName + "</td>"
-                            + "<td>" + this.LastName + "</td>"
-                            + "<td>" + this.Email + "</td>"
-                            + "<td>" + this.Password + "</td>"
-                            + "</tr>";
-                        $("#tblUser tbody").append(rows);
-                    });
-                }
-            });
-        }
+        var TableUser = Backbone.View.extend({
+            el: $('wrapper'),
+            initialize: function () {
+                this.render()
+            },
+            render: function () {
+                var self = this;
+                var users = new Users();
+                users.fetch({
+                    success: function (users) {
+                        var variable = { users: users.models }
+                        var template = _.template($('#table_template').html())
+                        self.$el.html(template(variable))
+                    }
+                });
+            }
+        });
+
+        new TableUser();
     </script>
-}
+</body>
+</html>

@@ -1,189 +1,104 @@
-﻿@model SSW.Web.ViewModels.Account.UserLoginVM
-
-@{
-    ViewBag.Title = "Login";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@{
+    Layout = null;
 }
 
-<h2>Login</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    @Styles.Render("~/Content/css")
+</head>
+<body>
 
-
-@using (Html.BeginForm())
-{
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @id = "Email" } })
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @id = "Password" } })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                @Html.ValidationMessage("IncorrectPassword", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RememberMe, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.RememberMe, new { @id = "RememberMe" })
-                    @Html.ValidationMessageFor(model => model.RememberMe, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Login" class="btn btn-default" id="btnLogin" />
-            </div>
-        </div>
+    <div class="container" id="wrapper">
+        <input type="text" placeholder="Email" name="email" id="email">
+        <input type="password" placeholder="Password" name="password" id="password">
+        <button class="btn btn-primary" id="loginBtn">Login</button>
     </div>
-}
 
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/underscore.js"></script>
+    <script src="~/Scripts/backbone.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
 
-
-<div>
-    @Html.ActionLink("Back", "index", "Home")
-</div>
-
-
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-    @*<script type="text/javascript">
-        $(function () {
-            $("#btnLogin").click(function (event) {
-                event.preventDefault();
-                let user = { };
-                user.Email = $("#Email").val();
-                user.Password = $("#Password").val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("Login", "Accounts")",
-                    dataType: "json",
-                    contentType: "application/json",
-                    data: JSON.stringify(user),
-                    beforeSend: function () {
-                        $("#btnLogin").attr("disabled", true).css("cursor", "default").fadeIn();
-                    },
-                    complete: function () {
-                        $("#btnLogin").attr("disabled", false);
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            location.href = "/Home/Index"
-                        } else {
-                            alert("Status code: " + response.statusCode + ". " + response.statusCodeText + ". " + response.responseText);
-                        }
-                    },
-                    error: function (xhr) {
-                        if (xhr.status < 400) {
-                            alert("Error code: 400. Bad request");
-                        } else {
-                            alert("Error code: " + xhr.status + ". " + xhr.statusText);
-                        }
-                    }
-                });
-            });
-        });
-    </script>*@
     <script>
+        var LoginModel = Backbone.Model.extend({
+            url: 'login',
 
+            defaults: {
+                email: '',
+                password: ''
+            }
+        });
 
-        $(document).ready(function () {
-            var LoginUser = Backbone.Model.extend({
-                url: 'accounts/login',
+        var LoginView = Backbone.View.extend({
+            el: $('#wrapper'),
 
-                defaults: {
-                    Email: null,
-                    Password: null
-                },
+            events: {
+                "click #loginBtn": "login"
+            },
 
-                login: function () {
-                    this.fetch({
-                        data: { Email: $('#Email').val(), Password: $('#Password').val() },
-                        type: 'post',
-                        success: function (response) {
+            initialize: function () {
+                this.listenTo(this.model, 'change', this.render);
+            },
+
+            render: function () {
+                //var attributes = this.model.toJSON();
+            },
+
+            login: function () {
+                console.log('View: login');
+                this.model.set({
+                    "email": $('#email').val(),
+                    "password": $('#password').val()
+                });
+
+                console.log('Model: Login function:' + JSON.stringify(this.model));
+
+                this.model.save(
+                    { Email: this.model.email, Password: this.model.password },
+                    {
+                        success: function (model, response, options) {
                             if (response.success) {
                                 location.href = "/Home/Index"
                             } else {
                                 alert("Status code: " + response.statusCode + ". " + response.statusCodeText + ". " + response.responseText);
                             }
+                            console.log("success\n" + JSON.stringify(model) +"\n\n" + JSON.stringify(response) + "\n\n" + JSON.stringify(options));
                         },
-                        error: function (xhr) {
-                            if (xhr.status < 400) {
-                                alert("Error code: 400. Bad request");
-                            } else {
-                                alert("Error code: " + xhr.status + ". " + xhr.statusText);
-                            }
+
+                        error: function (model, response, options) {
+                            console.log("error\n" + JSON.stringify(model) + "\n\n" + JSON.stringify(response) + "\n\n" + JSON.stringify(options));
                         }
-                    });
-                },
-
-                parse: function (response) {
-                    if (response.success) {
-                        location.href = "/Home/Index"
-                    } else {
-                        alert("Status code: " + response.statusCode + ". " + response.statusCodeText + ". " + response.responseText);
                     }
-                }
+                );
 
-            });
-
-            //var model = new LoginUser();
-
-            //var DisplayView = Backbone.View.extend({
-            //    el: ".complete",
-            //    model: model,
-            //    type: 'POST',
-            //    initialize: function () {
-            //        this.listenTo(this.model, "sync change", this.gotdata);
-            //    },
-            //    events: {
-            //        "click #signin": "getdata"
-            //    },
-            //    getdata: function (event) {
-            //        event.preventDefault();
-            //        var username = $("input#Email").val();
-            //        var password = $("input#Password").val();
-            //        this.model.set({ username: username, password: password });
-            //        this.model.fetch();
-            //    },
-            //    gotdata: function () {
-            //        console.log(this.model.get('username'));
-            //        console.log(this.model.get('password'));
-            //        $("#base-nav").load(location.href + " #base-nav");
-            //        $("#signin-form").load(location.href + " #signin-form");
-            //    }
-            //});
-
-            //var displayView = new DisplayView();
-
-            $('#btnLogin').click(function (e) {
-                e.preventDefault();
-                console.log('btnLogin clicked');
-                LoginUser.login();
-
-            });
-
-            
+                console.log('Model: response');
+            }
         });
+
+        //var Router = Backbone.Router.extend({
+        //    routes: {
+        //        "": "home",
+        //        "login": "login"
+        //    },
+
+        //    home: function () {
+        //    },
+
+        //    login: function () {
+        //        var loginModel = new LoginModel();
+        //        var loginView = new LoginView({ model: loginModel });
+        //        loginModel.fetch();
+        //    }
+        //});
+
+        var m = new LoginModel();
+        var v = new LoginView({ model: m });
+        Backbone.history.start();
+
     </script>
 
-    @*<script id="loginTemplate" type="text/template">
-        <ul>
-            <li><%= Email %></li>
-            <li><%= Password %></li>
-        </ul>
-        <button class="btn btn-default">Login</button>
-    </script>*@
-}
+</body>
+</html>

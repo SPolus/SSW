@@ -30,7 +30,7 @@ namespace SSW.Web.Controllers
 
         [HttpPost]
         public async Task<JsonResult> Login(UserLoginVM user)
-            {
+        {
             var authenticatedUser = await _repository.FirstOrDefaultAsync(x => x.Email == user.Email && x.Password == user.Password, u => new { u.Email });
 
             if (authenticatedUser == null)
@@ -40,7 +40,7 @@ namespace SSW.Web.Controllers
             }
 
             _cookieService.SetAuthenticationToken(authenticatedUser.Email, user.RememberMe, _cookieTimeoutInMinutes);
-            return Json(new { success = true,  responseText = "Success" });
+            return Json(new { success = true, responseText = "Success" });
         }
 
         [Authorize]
@@ -48,6 +48,34 @@ namespace SSW.Web.Controllers
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", new { controller = "Home", area = string.Empty });
+        }
+
+        // GET: Register
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Register(UserRegisterVM user)
+        {
+            bool isExist = await _repository.Exist(x => x.Email == user.Email);
+
+            if (isExist)
+            {
+                return Json(new { success = false, responseText = "User already exists" });
+            }
+
+            var newUser = new User {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email, 
+                Password = user.Password,
+                Student = new Student { }
+            };
+
+            await _repository.AddAsync(newUser);
+            return Json(new { success = true, responseText = "Success" });
         }
 
     }

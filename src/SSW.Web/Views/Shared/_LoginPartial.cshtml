@@ -6,7 +6,8 @@
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Login", "Login", "Accounts", routeValues: null, htmlAttributes: new { id = "LoginLink" })</li>
-    </ul>
+<ul class="nav navbar-nav navbar-right">
+    <li>@Html.ActionLink("Login", "Login", "Accounts", routeValues: null, htmlAttributes: new { id = "LoginLink" })</li>
+    <li>@Html.ActionLink("Register", "Register", "Accounts", routeValues: null, htmlAttributes: new { id = "RegisterLink" })</li>
+</ul>
 }
