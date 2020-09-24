@@ -54,9 +54,11 @@
     @Html.ActionLink("Back", "index", "Home")
 </div>
 
+
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script type="text/javascript">
+    @*<script type="text/javascript">
         $(function () {
             $("#btnLogin").click(function (event) {
                 event.preventDefault();
@@ -93,5 +95,95 @@
                 });
             });
         });
+    </script>*@
+    <script>
+
+
+        $(document).ready(function () {
+            var LoginUser = Backbone.Model.extend({
+                url: 'accounts/login',
+
+                defaults: {
+                    Email: null,
+                    Password: null
+                },
+
+                login: function () {
+                    this.fetch({
+                        data: { Email: $('#Email').val(), Password: $('#Password').val() },
+                        type: 'post',
+                        success: function (response) {
+                            if (response.success) {
+                                location.href = "/Home/Index"
+                            } else {
+                                alert("Status code: " + response.statusCode + ". " + response.statusCodeText + ". " + response.responseText);
+                            }
+                        },
+                        error: function (xhr) {
+                            if (xhr.status < 400) {
+                                alert("Error code: 400. Bad request");
+                            } else {
+                                alert("Error code: " + xhr.status + ". " + xhr.statusText);
+                            }
+                        }
+                    });
+                },
+
+                parse: function (response) {
+                    if (response.success) {
+                        location.href = "/Home/Index"
+                    } else {
+                        alert("Status code: " + response.statusCode + ". " + response.statusCodeText + ". " + response.responseText);
+                    }
+                }
+
+            });
+
+            //var model = new LoginUser();
+
+            //var DisplayView = Backbone.View.extend({
+            //    el: ".complete",
+            //    model: model,
+            //    type: 'POST',
+            //    initialize: function () {
+            //        this.listenTo(this.model, "sync change", this.gotdata);
+            //    },
+            //    events: {
+            //        "click #signin": "getdata"
+            //    },
+            //    getdata: function (event) {
+            //        event.preventDefault();
+            //        var username = $("input#Email").val();
+            //        var password = $("input#Password").val();
+            //        this.model.set({ username: username, password: password });
+            //        this.model.fetch();
+            //    },
+            //    gotdata: function () {
+            //        console.log(this.model.get('username'));
+            //        console.log(this.model.get('password'));
+            //        $("#base-nav").load(location.href + " #base-nav");
+            //        $("#signin-form").load(location.href + " #signin-form");
+            //    }
+            //});
+
+            //var displayView = new DisplayView();
+
+            $('#btnLogin').click(function (e) {
+                e.preventDefault();
+                console.log('btnLogin clicked');
+                LoginUser.login();
+
+            });
+
+            
+        });
     </script>
+
+    @*<script id="loginTemplate" type="text/template">
+        <ul>
+            <li><%= Email %></li>
+            <li><%= Password %></li>
+        </ul>
+        <button class="btn btn-default">Login</button>
+    </script>*@
 }

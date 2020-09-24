@@ -30,7 +30,7 @@ namespace SSW.Web.Controllers
 
         [HttpPost]
         public async Task<JsonResult> Login(UserLoginVM user)
-        {
+            {
             var authenticatedUser = await _repository.FirstOrDefaultAsync(x => x.Email == user.Email && x.Password == user.Password, u => new { u.Email });
 
             if (authenticatedUser == null)
