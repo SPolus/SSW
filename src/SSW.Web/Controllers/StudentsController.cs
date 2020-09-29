@@ -14,6 +14,7 @@ using SSW.Web.ViewModels.Student;
 using System.Web.Security;
 using System.Web.Helpers;
 using SSW.Web.Filters;
+using Newtonsoft.Json;
 
 namespace SSW.Web.Controllers
 {
@@ -39,7 +40,7 @@ namespace SSW.Web.Controllers
             });
 
             var students = new List<StudentIndexVM>();
-
+            
             foreach (var student in f)
             {
                 students.Add(new StudentIndexVM
@@ -71,6 +72,16 @@ namespace SSW.Web.Controllers
             return View(student);
         }
 
+
+        [HttpGet]
+        public ActionResult AddStudent()
+        {
+            return View(new StudentCreateVM());
+        }
+
+
+
+
         // GET: Students/Create
         public ActionResult Create()
         {
@@ -79,30 +90,25 @@ namespace SSW.Web.Controllers
 
         // POST: Students/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,FirstName,LastName,Email,Password")] StudentCreateVM student)
+        public async Task<JsonResult> Create([Bind(Include = "Id,FirstName,LastName,Email,Password")] StudentCreateVM student)
         {
-            if (ModelState.IsValid)
+            bool isExists = await _repository.Exist(x => x.User.Email == student.Email);
+
+            if (isExists)
             {
-                bool isExists = await _repository.Exist(x => x.User.Email == student.Email);
-
-                if (isExists)
-                {
-                    ModelState.AddModelError("EmailExist", "Student already exists");
-                    return View(student);
-                }
-
-                var newStudent = new Student
-                {
-                    User = new User { Email = student.Email, Password = student.Password, FirstName = student.FirstName, LastName = student.LastName }
-                };
-
-                await _repository.AddAsync(newStudent);
-                return RedirectToAction("Index");
+                ModelState.AddModelError("EmailExist", "Student already exists");
+                return Json(new { success = false, statusCode = 400, statusCodeText = "Bad Request", responseText = "Student already exists" });
             }
 
-            return View(student);
+            var newStudent = new Student
+            {
+                User = new User { Email = student.Email, Password = student.Password, FirstName = student.FirstName, LastName = student.LastName }
+            };
+
+            await _repository.AddAsync(newStudent);
+            return Json(new { success = true, responseText = "Success" });
         }
+
 
         // GET: Students/Edit/5
         public async Task<ActionResult> Edit(int? id)

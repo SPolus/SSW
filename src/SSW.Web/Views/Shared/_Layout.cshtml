@@ -6,6 +6,7 @@
     <title>@ViewBag.Title - University</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -40,6 +41,10 @@
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/Scripts/underscore.js")
     @Scripts.Render("~/Scripts/backbone.js")
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+
+    @Scripts.Render("~/Scripts/App/CreateStudent.js")
 
     @RenderSection("scripts", required: false)
 </body>

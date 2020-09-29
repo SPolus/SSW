@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "Index1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Students List</h2>
+
+<div>
+    <table id="table">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Average Grade</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+@section Scripts{
+
+    <script type="text/template" id="item-template">
+        <td><%= fullName %></td>
+        <td><%= avgGrade %></td>
+    </script>
+
+    <script>
+
+        var user = Backbone.Model.extend({
+            defaults: {
+                fullName: '',
+                avgGrade: ''
+            }
+        });
+
+        var user_collection = Backbone.Collection.extend({
+            model: user,
+            url: 'index',
+        });
+
+        var user_view = Backbone.View.extend({
+            tagName: 'tr',
+            template: _.template($("item-template").html()),
+            render: function () {
+                this.$el.html(this.template(this.model.toJSON()));
+                return this;
+            }
+        });
+
+        var user_list_view = Backbone.View.extend({
+            el: $('#table'),
+
+            initialize: function () {
+                this.model.bind('add', this.render, this);
+            },
+
+            render: function () {
+                var $tbody = this.$("tbody");
+                _.each(this.model.models, function (data) {
+                    this.$el.append(new member_view({ model: data }).render().el);
+                }, this);
+                return this;
+            }
+        });
+
+        var collection = new user_collection();
+        var view = new user_list_view({model: collection})
+    </script>
+}

@@ -6,7 +6,8 @@ namespace SSW.Web.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var a = View();
+            return a;
         }
     }
 }

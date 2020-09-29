@@ -11,7 +11,7 @@ namespace SSW.Web.Controllers
 {
     public class AccountsController : Controller
     {
-        private const int _cookieTimeoutInMinutes = 10;
+        private const int _cookieTimeoutInMinutes = 60;
 
         private readonly CookieService _cookieService;
         private readonly IRepository<User> _repository;
@@ -49,34 +49,5 @@ namespace SSW.Web.Controllers
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", new { controller = "Home", area = string.Empty });
         }
-
-        // GET: Register
-        public ActionResult Register()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> Register(UserRegisterVM user)
-        {
-            bool isExist = await _repository.Exist(x => x.Email == user.Email);
-
-            if (isExist)
-            {
-                return Json(new { success = false, responseText = "User already exists" });
-            }
-
-            var newUser = new User {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email, 
-                Password = user.Password,
-                Student = new Student { }
-            };
-
-            await _repository.AddAsync(newUser);
-            return Json(new { success = true, responseText = "Success" });
-        }
-
     }
 }

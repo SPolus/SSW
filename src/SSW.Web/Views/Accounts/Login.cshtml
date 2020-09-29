@@ -57,7 +57,8 @@
                 console.log('Model: Login function:' + JSON.stringify(this.model));
 
                 this.model.save(
-                    { Email: this.model.email, Password: this.model.password },
+                    this.model.toJSON(),
+                    //{ Email: this.model.email, Password: this.model.password },
                     {
                         success: function (model, response, options) {
                             if (response.success) {

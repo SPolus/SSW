@@ -12,30 +12,47 @@ namespace SSW.Web.Controllers
 {
     public class TestController : Controller
     {
-        private readonly IRepository<User> _repository;
+        private readonly IRepository<Student> _repository;
 
-        public TestController(IRepository<User> repository)
+        public TestController(IRepository<Student> repository)
         {
             _repository = repository;
         }
+
         // GET: Test
-        public ActionResult Index()
+        [HttpGet]
+        public async Task<ActionResult> Index()
         {
-            return View();
-        }
+            var f = await _repository.ToListAsync(s => new
+            {
+                s.Id,
+                s.User.FirstName,
+                s.User.LastName,
+                s.User.Email,
+                s.User.Password
+            }).ConfigureAwait(false);
 
-        public async Task<ActionResult> GetUsers()
-        {
-            var users = await _repository.ToListAsync();
-            var serialized = JsonConvert.SerializeObject(users, Formatting.Indented);
-            return Json(serialized, JsonRequestBehavior.AllowGet);
-        }
+            var students = new List<Student>();
 
-        [HttpPost]
-        public async Task<ActionResult> CreateUser(User user)
-        {
-            await _repository.AddAsync(user);
-            return Json(new { }, JsonRequestBehavior.AllowGet);
+            if (f != null)
+            {
+                foreach (var s in f)
+                {
+                    students.Add(new Student
+                    {
+                        Id = s.Id,
+                        User = new User
+                        {
+                            FirstName = s.FirstName,
+                            LastName = s.LastName,
+                            Email = s.Email,
+                            Password = s.Password
+                        }
+                    });
+                }
+            }
+
+            return View(students);
         }
     }
 }
