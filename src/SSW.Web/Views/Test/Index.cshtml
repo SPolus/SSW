@@ -7,6 +7,14 @@
 
 <!DOCTYPE html>
 
+<div id="tableWrapper">
+    <table></table>
+    <div id="formWrapper">
+        <label></label>
+        <input />
+    </div>
+</div>
+
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -15,14 +23,41 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
 </head>
 <body>
-    
+
     <div class="container" id="wrapper">
         <h4>Students</h4>
-        <button class="btn btn-default" id="btnAdd">Add</button>
         <hr />
 
-        <table class="display" id="studentsTable">
-        </table>
+
+        <div id="tableWrapper">
+            <table></table>
+        </div>
+        <div id="formWrapper">
+            <label></label>
+            <input />
+        </div>
+
+        <div id="tableWrapper">
+            <table class="display" id="studentsTable">
+            </table>
+        </div>
+
+        <div id="formWrapper">
+            <label>First Name:</label><br>
+            <input type="text" id="firstName" name="firstName"><br>
+
+            <label>Last Name:</label><br>
+            <input type="text" id="lastName" name="lastName"><br>
+
+            <label>Email:</label><br>
+            <input type="email" id="email" name="email"><br>
+
+            <label>Password:</label><br>
+            <input type="password" id="password" name="password"><br><br>
+
+            <button id="btnSubmit" class="btn btn-default" type="button">Submit</button>
+        </div>
+
     </div>
 
 
@@ -37,7 +72,40 @@
 
         $(function () {
 
-            var Student = Backbone.Model.extend();
+            var Student = Backbone.Model.extend({
+                defaults: {
+                    FirstName: 'd',
+                    LastName: 'dsds',
+                    Email: 'sds',
+                    Password: 'sds'
+                },
+
+                url: 'Test/Create',
+
+
+            });
+
+            var StudentView = Backbone.View.extend({
+                el: $('#formWrapper'),
+
+                events: {
+                    'click #btnSubmit': 'submit'
+                },
+
+                initialize: function () {
+
+                },
+
+                submit: function () {
+                    this.model.save();
+
+                    //$('#formWrapper').hide();
+                    $('#tableWrapper').show();
+                    this.remove();
+                }
+            });
+
+
 
             var Students = Backbone.Collection.extend();
 
@@ -45,11 +113,13 @@
                 el: $('#wrapper'),
 
                 events: {
-                    'click button#btnAdd': 'addRow'
+                    'click #studentsTable tbody tr': 'addRow'
                 },
 
                 initialize: function () {
                     this.listenTo(this.model, 'change', this.render)
+
+                    $('#formWrapper').hide();
 
                     this.render();
                 },
@@ -94,16 +164,21 @@
                 },
 
                 addRow: function () {
-                    alert('addrow');
+                    $('#tableWrapper').hide();
+                    $('#formWrapper').show();
+
+                    new StudentView({model: new Student()});
                 }
-                
+
             });
 
-            
+
+
+
             var v = new StudentsTable({ model: new Students(data) });
 
         });
     </script>
-    
+
 </body>
 </html>
