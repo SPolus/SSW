@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Linq;
 
 namespace SSW.Web.Controllers
 {
@@ -18,6 +19,8 @@ namespace SSW.Web.Controllers
         {
             _repository = repository;
         }
+
+        
 
         // GET: Test
         [HttpGet]
@@ -64,33 +67,45 @@ namespace SSW.Web.Controllers
 
         [HttpPost]
         public async Task<JsonResult> Edit(Student student)
+
         {
-            //var st = await _repository.FirstOrDefaultAsync(x => x.User.Email == student.User.Email, s => new { });
+            var st = await _repository.FirstOrDefaultAsync(x => x.User.Email == student.User.Email, s => new
+            {
+                s.Id,
+                s.User.FirstName,
+                s.User.LastName,
+                s.User.Email,
+                s.User.Password,
+                s.User.Student,
+                s.User.Instructor,
+                s.Enrollments
+            });
 
-            //if (st == null)
-            //{
-            //    return Json(new { success = false, statusCode = 400, statusCodeText = "Bad Request", responseText = "Student doesn't exists" });
-            //}
+            if (st == null)
+            {
+                return Json(new { success = false, statusCode = 400, statusCodeText = "Bad Request", responseText = "Student doesn't exists" });
+            }
 
-            //var updated = new Student
-            //{
-            //    Id = st.Id,
-            //    User = new User
-            //    {
-            //        Id = st.Id,
-            //        FirstName = student.User.FirstName,
-            //        LastName = student.User.LastName,
-            //        Email = student.User.Email,
-            //        Password = student.User.Password,
-            //        Student = st.User.Student,
-            //        Instructor = st.User.Instructor
-            //    },
-            //    Enrollments = st.Enrollments
-            //};
+            var updated = new Student
+            {
+                Id = st.Id,
+                User = new User
+                {
+                    Id = st.Id,
+                    FirstName = student.User.FirstName,
+                    LastName = student.User.LastName,
+                    Email = student.User.Email,
+                    Password = student.User.Password,
+                    Student = st.Student,
+                    Instructor = st.Instructor
+                },
+                Enrollments = st.Enrollments
+            };
 
-            await _repository.UpdateAsync(student);
+            await _repository.UpdateAsync(updated);
 
             return Json(new { success = true, responseText = "Success" });
+            //return Json($"{HttpContext.Response.StatusCode} {HttpContext.Response.StatusDescription}");
         }
     }
 }

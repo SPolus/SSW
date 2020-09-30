@@ -20,7 +20,7 @@
         <h4>Students</h4>
         <hr />
 
-        <div id="tableWrapper" style="display:inline">
+        <div id="tableWrapper" style="display:none">
             <table class="display" id="studentsTable">
             </table>
         </div>
@@ -122,7 +122,8 @@
 
                 },
 
-                submit: function () {
+                submit: function (e) {
+                    e.preventDefault();
                     alert('submit');
 
                     var std = new Student({
