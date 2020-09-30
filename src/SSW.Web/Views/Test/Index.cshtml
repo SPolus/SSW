@@ -7,14 +7,6 @@
 
 <!DOCTYPE html>
 
-<div id="tableWrapper">
-    <table></table>
-    <div id="formWrapper">
-        <label></label>
-        <input />
-    </div>
-</div>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -28,34 +20,29 @@
         <h4>Students</h4>
         <hr />
 
-
-        <div id="tableWrapper">
-            <table></table>
-        </div>
-        <div id="formWrapper">
-            <label></label>
-            <input />
-        </div>
-
-        <div id="tableWrapper">
+        <div id="tableWrapper" style="display:inline">
             <table class="display" id="studentsTable">
             </table>
         </div>
 
-        <div id="formWrapper">
-            <label>First Name:</label><br>
-            <input type="text" id="firstName" name="firstName"><br>
+        <div id="formWrapper" style="display:none">
+            <form>
+                <label>First Name:</label><br>
+                <input type="text" id="firstName" name="firstName"><br>
 
-            <label>Last Name:</label><br>
-            <input type="text" id="lastName" name="lastName"><br>
+                <label>Last Name:</label><br>
+                <input type="text" id="lastName" name="lastName"><br>
 
-            <label>Email:</label><br>
-            <input type="email" id="email" name="email"><br>
+                <label>Email:</label><br>
+                <input type="email" id="email" name="email"><br>
 
-            <label>Password:</label><br>
-            <input type="password" id="password" name="password"><br><br>
+                <label>Password:</label><br>
+                <input type="password" id="password" name="password"><br><br>
 
-            <button id="btnSubmit" class="btn btn-default" type="button">Submit</button>
+                <input type="button" id="btnSubmit" class="btn btn-default" value="Submit">
+
+                <button id="btnSubmit" class="btn btn-default" type="button">Submit</button>
+            </form>
         </div>
 
     </div>
@@ -113,41 +100,51 @@
                 el: $('#wrapper'),
 
                 events: {
-                    'click #studentsTable tbody tr': 'addRow'
+                    'click #btnSubmit': 'submit',
+                    'click #studentsTable button.btnEdit': 'edit2',
+                    //'click #studentsTable tbody tr td button.btnDetails': 'details',
+                    //'click #studentsTable button.btnDelete': 'delete'
                 },
 
                 initialize: function () {
-                    this.listenTo(this.model, 'change', this.render)
 
-                    $('#formWrapper').hide();
+                    this.$('#formWrapper').hide(); // todo: hide using css style
 
                     this.render();
                 },
 
                 render: function () {
-                    var table =  $('#studentsTable').DataTable({
+                    var self = $(this);
+
+                    var table = this.$('#studentsTable').DataTable({
                         data: this.model.toJSON(),
                         columns: [
-                            { className: 'details-control', orderable: false, data: '', defaultContent: ''},
                             { title: "Id", data: "Id" },
                             { title: "First Name", data: "User.FirstName" },
                             { title: "Last Name", data: "User.LastName" },
                             { title: "Email Name", data: "User.Email" },
                             { title: "Password", data: "User.Password" },
+                            {
+                                title: 'Actions', data: null, searchable: false, orderable: false, 
+                                defaultContent: '<button class="btnEdit">Edit</button> | <button class="btnDetails">Details</button> | <button class="btnDelete">Delete</button>'
+                            }
 
-                        ]
+                        ],
+                        //columnDefs: [{
+                        //    targets: -1,
+                        //    data: null,
+                        //    defaultContent: '<button class="btnEdit">Edit</button> | <button class="btnDetails">Details</button> | <button class="btnDelete">Delete</button>'
+                            
+                        //}]
                     });
 
-                    function format(d) {
-                        return '<table>' +
-                            '<tr>' +
-                            '<td>Full name:</td>' +
-                            '<td>' + d.User.LastName + ' ' + d.User.FirstName + '</td>' +
-                            '</tr>' +
-                            '</table>';
-                    }
 
-                    $('#studentsTable tbody').on('click', 'td.details-control', function () {
+                    
+                    //this.$('tbody').on('click', 'button.btnEdit', function () {
+                    //    alert('edit');
+                    //});
+
+                    this.$('tbody').on('click', 'button.btnDetails', function () {
                         var tr = $(this).closest('tr');
                         var row = table.row(tr);
 
@@ -160,15 +157,34 @@
                         }
                     });
 
+                    this.$('tbody').on('click', 'button.btnDelete', function () {
+                        alert('delete from scope');
+                    });
+
+                    function format(d) {
+                        return '<table><tr>' +
+                            '<td>Full name:</td>' +
+                            '<td>' + d.User.LastName + ' ' + d.User.FirstName + '</td>' +
+                            '</tr></table>';
+                    }
+
                     return this;
                 },
 
-                addRow: function () {
-                    $('#tableWrapper').hide();
-                    $('#formWrapper').show();
+                edit2: function () {
+                    //this.$('#tableWrapper').hide();
+                },
 
-                    new StudentView({model: new Student()});
+                submit: function () {
+                    alert('submit button');
                 }
+
+                //addRow: function () {
+                //    $('#tableWrapper').hide();
+                //    $('#formWrapper').show();
+
+                //    new StudentView({model: new Student()});
+                //}
 
             });
 
