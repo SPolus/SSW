@@ -14,10 +14,12 @@ namespace SSW.Web.Controllers
     public class TestController : Controller
     {
         private readonly IRepository<Student> _repository;
+        private readonly IRepository<User> _userRepository;
 
-        public TestController(IRepository<Student> repository)
+        public TestController(IRepository<Student> repository, IRepository<User> userRepository)
         {
             _repository = repository;
+            _userRepository = userRepository;
         }
 
         
@@ -26,27 +28,27 @@ namespace SSW.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            var f = await _repository.ToListAsync(s => new
+            var students = await _repository.ToListAsync(s => new
             {
-                s.Id,
+                Id = s.Id,
                 s.User.FirstName,
                 s.User.LastName,
                 s.User.Email,
                 s.User.Password
-            }).ConfigureAwait(false);
+            });
 
-            var students = new List<Student>();
+            var results = new List<Student>();
 
-            foreach (var s in f)
+            foreach (var s in students)
             {
-                students.Add(new Student
+                results.Add(new Student
                 {
                     Id = s.Id,
                     User = new User { Id = s.Id, FirstName = s.FirstName, LastName = s.LastName, Email = s.Email, Password = s.Password }
                 });
             }
 
-            return View(students);
+            return View(results);
         }
 
         [HttpPost]
@@ -67,45 +69,25 @@ namespace SSW.Web.Controllers
 
         [HttpPost]
         public async Task<JsonResult> Edit(Student student)
-
         {
-            var st = await _repository.FirstOrDefaultAsync(x => x.User.Email == student.User.Email, s => new
-            {
-                s.Id,
-                s.User.FirstName,
-                s.User.LastName,
-                s.User.Email,
-                s.User.Password,
-                s.User.Student,
-                s.User.Instructor,
-                s.Enrollments
-            });
+            var user = await _userRepository.FirstOrDefaultAsync(x => x.Email == student.User.Email);
 
-            if (st == null)
+            if (user == null)
             {
-                return Json(new { success = false, statusCode = 400, statusCodeText = "Bad Request", responseText = "Student doesn't exists" });
+                return Json(new { responseText = "Student doesn't exists" });
             }
 
-            var updated = new Student
-            {
-                Id = st.Id,
-                User = new User
-                {
-                    Id = st.Id,
-                    FirstName = student.User.FirstName,
-                    LastName = student.User.LastName,
-                    Email = student.User.Email,
-                    Password = student.User.Password,
-                    Student = st.Student,
-                    Instructor = st.Instructor
-                },
-                Enrollments = st.Enrollments
-            };
+            user.FirstName = student.User.FirstName;
+            user.LastName = student.User.LastName;
+            user.Email = student.User.Email;
+            user.Password = student.User.Password;
 
-            await _repository.UpdateAsync(updated);
+            await _userRepository.SaveChangesAsync();
 
-            return Json(new { success = true, responseText = "Success" });
-            //return Json($"{HttpContext.Response.StatusCode} {HttpContext.Response.StatusDescription}");
+            return Json(new { responseText = "Success" });
+
+            
+            ////return Json($"{HttpContext.Response.StatusCode} {HttpContext.Response.StatusDescription}");
         }
     }
 }

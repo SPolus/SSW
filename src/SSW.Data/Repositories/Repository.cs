@@ -23,6 +23,11 @@ namespace SSW.Data.Repositories
             return _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> where)
+        {
+            return _context.Set<TEntity>().Where(where).FirstOrDefaultAsync();
+        }
+
         public Task<TResult> FirstOrDefaultAsync<TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TResult>> selector)
         {
             return _context.Set<TEntity>().Where(where).Select(selector).FirstOrDefaultAsync();
@@ -64,6 +69,18 @@ namespace SSW.Data.Repositories
         {
             _context.Set<TEntity>().Remove(entity);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
